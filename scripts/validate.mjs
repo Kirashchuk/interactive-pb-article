@@ -13,6 +13,7 @@ await Promise.all([
   access(resolve(root, "dist", "client", "data", "analytics.json")),
   access(resolve(root, "dist", "client", "data", "ukraine_oblasts.geojson")),
   access(resolve(root, "dist", "client", "vendor", "d3.v7.min.js")),
+  access(resolve(root, "dist", "client", "Стаття_Бюджети_участі_2015-2026.pdf")),
 ]);
 const hosting = JSON.parse(await readFile(hostingPath, "utf8"));
 assert.equal(hosting.project_id, "appgprj_6a66051c8ec881919651cb9567f30924");

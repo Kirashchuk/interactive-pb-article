@@ -10,7 +10,7 @@ await mkdir(resolve(dist, "server"), { recursive: true });
 await mkdir(resolve(dist, "client"), { recursive: true });
 await mkdir(resolve(dist, ".openai"), { recursive: true });
 
-for (const entry of ["index.html", "css", "data", "js", "vendor"]) {
+for (const entry of ["index.html", "css", "data", "js", "vendor", "Стаття_Бюджети_участі_2015-2026.pdf"]) {
   await cp(resolve(root, entry), resolve(dist, "client", entry), { recursive: true });
 }
 
