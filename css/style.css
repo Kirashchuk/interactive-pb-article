@@ -222,6 +222,7 @@ h3 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 /* ------------------------------------------------ проза і слоти */
 .prose p { margin: 0 0 1.2rem; }
 .prose .lead { font-size: 1.25rem; color: var(--ink-2); }
+.prose .source-note { margin-top: -0.35rem; font-size: 0.9rem; color: var(--muted); }
 .slot {
   border: 1.5px dashed var(--baseline);
   border-radius: 10px;
