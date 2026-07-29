@@ -619,6 +619,14 @@ figcaption, .viz-caption {
 }
 .data-table-details th:first-child, .data-table-details td:first-child { text-align: left; }
 .data-table-details th { color: var(--ink-2); font-weight: 600; }
+.implementation-table th, .implementation-table td {
+  text-align: left;
+  vertical-align: top;
+}
+.implementation-table th:nth-child(2), .implementation-table td:nth-child(2) {
+  text-align: right;
+}
+.implementation-table tr { break-inside: avoid; }
 
 /* ------------------------------------------------ тултип */
 .viz-tooltip {
