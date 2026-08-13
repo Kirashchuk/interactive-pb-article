@@ -12,6 +12,10 @@ await Promise.all([
   access(resolve(root, "dist", "client", "data", "pb_data.json")),
   access(resolve(root, "dist", "client", "data", "analytics.json")),
   access(resolve(root, "dist", "client", "data", "ukraine_oblasts.geojson")),
+  access(resolve(root, "dist", "client", "data", "pb_map_city_metrics_2018_2021.csv")),
+  access(resolve(root, "dist", "client", "assets", "maps", "first-pb-year.png")),
+  access(resolve(root, "dist", "client", "assets", "maps", "prewar-resource-share.png")),
+  access(resolve(root, "dist", "client", "assets", "maps", "resource-share-stability.png")),
   access(resolve(root, "dist", "client", "vendor", "d3.v7.min.js")),
   access(resolve(root, "dist", "client", "Стаття_Бюджети_участі_2015-2026.pdf")),
 ]);

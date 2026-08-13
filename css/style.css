@@ -628,6 +628,140 @@ figcaption, .viz-caption {
 }
 .implementation-table tr { break-inside: avoid; }
 
+/* ------------------------------------------------ картографічний синтез */
+.map-atlas {
+  margin-top: 4.5rem;
+}
+.map-atlas-intro h2 {
+  margin-top: 0.35rem;
+}
+.section-kicker,
+.map-index {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.map-coverage {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 1.5rem 0 0;
+  font-family: var(--sans);
+}
+.map-coverage-item {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.map-coverage-item b {
+  font-size: 1.08rem;
+  font-variant-numeric: tabular-nums;
+}
+.map-coverage-item span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.map-analysis-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  margin: 2rem 0 2.5rem;
+  min-width: 0;
+}
+.map-analysis-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.map-analysis-copy {
+  max-width: 820px;
+  margin: 0 auto 1.25rem;
+}
+.map-analysis-copy h3 {
+  margin-top: 0.3rem;
+  font-size: clamp(1.18rem, 2.2vw, 1.45rem);
+}
+.map-insight {
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.research-map {
+  margin: 0;
+  min-width: 0;
+}
+.research-map-viewport {
+  overflow-x: auto;
+  max-width: 100%;
+  border: 1px solid var(--grid);
+  border-radius: 12px;
+  background: #fff;
+  scrollbar-color: var(--baseline) transparent;
+}
+.research-map-viewport:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.research-map a {
+  display: block;
+}
+.research-map img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 11px;
+}
+.research-map figcaption {
+  max-width: 900px;
+  margin: 9px auto 0;
+  line-height: 1.5;
+}
+.map-synthesis h3 {
+  margin-top: 0;
+}
+.key-insights {
+  display: grid;
+  gap: 10px;
+  padding-left: 1.25rem;
+  font-size: 0.98rem;
+}
+.key-insights li {
+  padding-left: 0.35rem;
+}
+.method-note {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 78%, var(--page));
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.map-data-details {
+  margin-top: 1.25rem;
+}
+.map-data-details th,
+.map-data-details td {
+  text-align: left;
+  vertical-align: top;
+}
+.map-data-details p {
+  margin: 0.8rem 0 0;
+}
+
 /* ------------------------------------------------ тултип */
 .viz-tooltip {
   position: fixed;
@@ -674,6 +808,7 @@ footer ul { padding-left: 1.2rem; }
   .year-story { order: 2; }
   .viz-panel { order: 1; }
   .donut-row { grid-template-columns: minmax(160px, 220px) 1fr; }
+  .map-analysis-card { padding: 16px; }
 }
 @media (max-width: 560px) {
   body { font-size: 1.05rem; }
@@ -684,10 +819,27 @@ footer ul { padding-left: 1.2rem; }
   .donut-row { grid-template-columns: 1fr; }
   .timeline-ticks button { font-size: 0.72rem; padding: 3px 2px; }
   .theme-toggle { top: 8px; right: 8px; width: 38px; height: 38px; }
+  .map-coverage { grid-template-columns: 1fr; }
+  .map-analysis-card { padding: 12px; }
+  .research-map a { width: 860px; }
+  .research-map figcaption { font-size: 0.74rem; }
+  .prose > table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .data-table-details {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 
 /* Друк */
 @media print {
   .theme-toggle, .progress, .scroll-cue { display: none; }
   .explorer, .chart-card { box-shadow: none; }
+  .map-analysis-card { box-shadow: none; break-inside: avoid; }
+  .research-map-viewport { overflow: visible; }
+  .research-map a { width: auto; }
 }
