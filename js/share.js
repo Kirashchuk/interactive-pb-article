@@ -82,9 +82,9 @@ function profilesChart({ profiles }) {
   const vals = g.append('g').selectAll('text.val').data(data).join('text')
     .attr('x', (d) => x(d.mean) + 6)
     .attr('y', (d) => y(d.city) + y.bandwidth() / 2).attr('dy', '0.32em')
-    .style('font-family', 'var(--sans)').style('font-size', '10.5px')
+    .style('font-family', 'var(--mono)').style('font-size', '10.5px')
     .style('font-variant-numeric', 'tabular-nums')
-    .style('font-weight', '650').style('fill', 'var(--ink)')
+    .style('font-weight', '600').style('fill', 'var(--ink)')
     .text((d) => pct(d.mean));
 
   g.append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', IH)

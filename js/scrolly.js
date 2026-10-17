@@ -124,7 +124,7 @@ function yearScale(years) {
 function drawXAxis(g, xFn, years) {
   g.append('g').selectAll('text').data(years).join('text')
     .attr('x', (y) => xFn(y)).attr('y', IH + 17).attr('text-anchor', 'middle')
-    .style('font-family', 'var(--sans)').style('font-size', '8.5px')
+    .style('font-family', 'var(--mono)').style('font-size', '8.5px')
     .style('font-variant-numeric', 'tabular-nums').style('fill', 'var(--muted)')
     .text((y) => (y % 2 ? '' : String(y).slice(2)));
   g.append('line').attr('x1', 0).attr('x2', IW).attr('y1', IH).attr('y2', IH)
@@ -138,7 +138,7 @@ function drawYGrid(g, y, ticks, fmt) {
         .style('stroke', 'var(--grid)').style('stroke-width', 1);
     }
     t.append('text').attr('x', -8).attr('y', y(v)).attr('dy', '0.32em').attr('text-anchor', 'end')
-      .style('font-family', 'var(--sans)').style('font-size', '9px')
+      .style('font-family', 'var(--mono)').style('font-size', '9px')
       .style('font-variant-numeric', 'tabular-nums').style('fill', 'var(--muted)')
       .text(fmt(v));
   }
@@ -174,7 +174,7 @@ function amountChart(series, onPin) {
   drawYGrid(g, y, y.ticks(4), (v) => fmtInt(v / 1e6));
   drawXAxis(g, x, years);
   g.append('text').attr('x', -8).attr('y', -5).attr('text-anchor', 'end')
-    .style('font-family', 'var(--sans)').style('font-size', '8.5px').style('fill', 'var(--muted)')
+    .style('font-family', 'var(--mono)').style('font-size', '8.5px').style('fill', 'var(--muted)')
     .text('млн грн');
 
   const line = d3.line().x((d) => x(d.year)).y((d) => y(d.amount)).curve(d3.curveMonotoneX);
@@ -192,7 +192,7 @@ function amountChart(series, onPin) {
     .attr('aria-label', (d) => `${d.year}: кошти ${fmtUAH(d.amount)}`);
 
   const label = g.append('text').attr('text-anchor', 'middle')
-    .style('font-family', 'var(--sans)').style('font-size', '10px').style('font-weight', '650')
+    .style('font-family', 'var(--mono)').style('font-size', '10px').style('font-weight', '600')
     .style('fill', 'var(--ink)').style('pointer-events', 'none');
 
   const ro = readout('#pin-amount');
@@ -362,7 +362,7 @@ function stripChart(obs, byYear, onPinObs, onPinYear) {
     if (v > 0) g.append('line').attr('x1', 0).attr('x2', IW).attr('y1', y(v)).attr('y2', y(v))
       .style('stroke', 'var(--grid)').style('stroke-width', 1);
     g.append('text').attr('x', -8).attr('y', y(v)).attr('dy', '0.32em').attr('text-anchor', 'end')
-      .style('font-family', 'var(--sans)').style('font-size', '8.5px')
+      .style('font-family', 'var(--mono)').style('font-size', '8.5px')
       .style('font-variant-numeric', 'tabular-nums').style('fill', 'var(--muted)')
       .text((100 * v).toLocaleString('uk-UA', { maximumFractionDigits: 2 }));
   }
@@ -378,7 +378,7 @@ function stripChart(obs, byYear, onPinObs, onPinYear) {
     .style('stroke', 'var(--baseline)').style('stroke-width', 1);
   g.append('g').selectAll('text').data(years).join('text')
     .attr('x', (d) => x(d)).attr('y', IH + 17).attr('text-anchor', 'middle')
-    .style('font-family', 'var(--sans)').style('font-size', '8px')
+    .style('font-family', 'var(--mono)').style('font-size', '8px')
     .style('font-variant-numeric', 'tabular-nums').style('fill', 'var(--muted)')
     .text((d) => String(d).slice(2));
 

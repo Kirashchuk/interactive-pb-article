@@ -5,11 +5,13 @@ import { initExplorer } from './interactive.js';
 import { initScrolly } from './scrolly.js';
 import { initShare } from './share.js';
 import { initIntl } from './intl.js';
+import { initContours } from './sheet.js';
 
 async function main() {
   initTheme();
   initProgress();
   initReveal();
+  initContours(document.getElementById('hero-contours'));
 
   let data, geo, analytics;
   try {

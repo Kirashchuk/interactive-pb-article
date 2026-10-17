@@ -92,7 +92,7 @@ function comparisonChart({ summary, international, barcelona }) {
     g.append('line').attr('x1', x(v)).attr('x2', x(v)).attr('y1', 0).attr('y2', IH)
       .style('stroke', 'var(--grid)').style('stroke-width', 1);
     g.append('text').attr('x', x(v)).attr('y', IH + 16).attr('text-anchor', 'middle')
-      .style('font-family', 'var(--sans)').style('font-size', '9.5px')
+      .style('font-family', 'var(--mono)').style('font-size', '9.5px')
       .style('font-variant-numeric', 'tabular-nums').style('fill', 'var(--muted)')
       .text((100 * v).toLocaleString('uk-UA', { maximumFractionDigits: 2 }) + ' %');
   }
@@ -125,8 +125,8 @@ function comparisonChart({ summary, international, barcelona }) {
   const vals = g.append('g').selectAll('text.val').data(items).join('text')
     .attr('x', (d) => x(d.value) + 7)
     .attr('y', (d) => y(d.name) + y.bandwidth() / 2).attr('dy', '0.32em')
-    .style('font-family', 'var(--sans)').style('font-size', '11px')
-    .style('font-weight', '650').style('font-variant-numeric', 'tabular-nums')
+    .style('font-family', 'var(--mono)').style('font-size', '11px')
+    .style('font-weight', '600').style('font-variant-numeric', 'tabular-nums')
     .style('fill', 'var(--ink)')
     .text((d) => (d.name === 'Шотландія' ? '≥' : d.value === 0.01 ? '≈' : '') + pct(d.value, 2));
 

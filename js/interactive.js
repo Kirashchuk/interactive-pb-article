@@ -6,6 +6,7 @@
 import { fmtInt, fmtUAH, fmtMetric, totalReadout, METRIC_LABELS } from './format.js';
 import { showTooltip, moveTooltip, hideTooltip } from './tooltip.js';
 import { YEAR_TEXTS } from './year-texts.js';
+import { frameLabels, scaleBar } from './sheet.js';
 
 const SEQ = ['var(--seq1)', 'var(--seq2)', 'var(--seq3)', 'var(--seq4)', 'var(--seq5)', 'var(--seq6)'];
 const SLOTS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)'];
@@ -120,11 +121,22 @@ function initMap(data, geo, onChange) {
   pat.append('path').attr('d', 'M0,7 l7,-7').style('stroke', 'var(--nodata)')
     .style('stroke-width', 1).style('opacity', 0.55);
 
+  // Проєкція та картооснова — як у презентації: градусна сітка, підписи на рамці, масштаб
   const projection = d3.geoConicEqualArea()
-    .parallels([46.5, 50.5])
-    .rotate([-31, 0])
-    .fitExtent([[10, 10], [MAP_W - 10, MAP_H - 10]], geo);
+    .parallels([45.5, 51.5])
+    .rotate([-31.2, 0])
+    .fitExtent([[26, 16], [MAP_W - 16, MAP_H - 24]], geo);
   const path = d3.geoPath(projection);
+
+  svg.append('path')
+    .datum(d3.geoGraticule().extent([[14, 40], [46, 58]]).step([2, 2])())
+    .attr('class', 'map-grat')
+    .attr('d', path);
+  // Державний кордон: товста лінія під областями — назовні лишається її зовнішня половина
+  svg.append('path')
+    .datum(geo)
+    .attr('class', 'map-ua')
+    .attr('d', path);
 
   // Значення показника міста за рік (для стану «data»)
   const val = (c, year, metric) => {
@@ -157,9 +169,9 @@ function initMap(data, geo, onChange) {
     .data(geo.features)
     .join('path')
     .attr('d', path)
-    .style('stroke', 'var(--baseline)')
+    .style('stroke', 'var(--edge)')
     .style('stroke-width', 0.7)
-    .style('fill', 'var(--page)');
+    .style('fill', 'var(--land)');
 
   oblasts
     .on('pointerenter pointermove', function (event, f) {
@@ -198,7 +210,7 @@ function initMap(data, geo, onChange) {
     .attr('class', 'bubble')
     .style('fill', 'var(--s1)')
     .style('fill-opacity', 0.72)
-    .style('stroke', 'var(--surface)')
+    .style('stroke', 'var(--ring)')
     .style('stroke-width', 1.4)
     .attr('r', 0);
 
@@ -290,6 +302,9 @@ function initMap(data, geo, onChange) {
     })
     .on('blur', hideTooltip);
 
+  frameLabels(svg, projection, MAP_W, MAP_H);
+  scaleBar(svg, projection, MAP_W, MAP_H, 200);
+
   buildMapLegend();
 
   onChange((s) => {
@@ -306,7 +321,7 @@ function initMap(data, geo, onChange) {
     t(oblasts).style('fill', (f) => {
       if (f.properties.excluded) return 'url(#hatch)';
       const v = totals.get(f.properties.iso);
-      return v ? color(v) : 'var(--page)';
+      return v ? color(v) : 'var(--land)';
     });
 
     // Бульбашки та стани
@@ -436,11 +451,11 @@ function initDonut(data, onChange) {
   const arcsG = g.append('g');
   const centerVal = g.append('text')
     .attr('text-anchor', 'middle').attr('dy', '-0.1em')
-    .style('font-family', 'var(--sans)').style('font-size', '19px')
-    .style('font-weight', '700').style('fill', 'var(--ink)');
+    .style('font-family', 'var(--f-disp)').style('font-size', '17px')
+    .style('font-weight', '600').style('letter-spacing', '-0.02em').style('fill', 'var(--ink)');
   const centerLbl = g.append('text')
     .attr('text-anchor', 'middle').attr('dy', '1.4em')
-    .style('font-family', 'var(--sans)').style('font-size', '10.5px')
+    .style('font-family', 'var(--mono)').style('font-size', '10px')
     .style('fill', 'var(--muted)');
 
   const arc = d3.arc().innerRadius(70).outerRadius(112).cornerRadius(3);
