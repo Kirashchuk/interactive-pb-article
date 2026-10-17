@@ -116,10 +116,48 @@ python tools/export_data.py
 ```
 
 Скрипт перевіряє інваріанти (35 міст, 131 спостереження) і пише
-`data/pb_data.json` + `data/analytics.json`. GeoJSON областей згенеровано
-`tools/build_data.mjs` (округлення до ~100 м, перемотка кілець під конвенцію
-d3-geo) з [geoBoundaries](https://www.geoboundaries.org) UKR ADM1 (simplified),
-CC BY 4.0 — перегенерація потрібна лише при заміні геометрії.
+`data/pb_data.json` + `data/analytics.json`.
+
+### Берегова лінія карти статті
+
+`data/ukraine_oblasts.geojson` містить усі 27 українських одиниць ADM1,
+включно з АР Крим і Севастополем. Початкові адміністративні полігони
+[geoBoundaries UKR ADM1](https://www.geoboundaries.org/) (CC BY 4.0) із
+`tools/raw/ukraine_adm1_geoboundaries.geojson` включають морські акваторії.
+`tools/build_coastline.py` обрізає лише сім прибережних регіонів
+(UA-65, UA-14, UA-23, UA-51, UA-48, UA-43, UA-40) за маскою фізичного суходолу
+`presentation/data/geo.json`, поле `land`. Решта 20 геометрій, назви, коди та
+прапорці `excluded` залишаються незмінними; статистичні JSON не перезаписуються.
+
+Маска походить із [OpenStreetMap land polygons](https://osmdata.openstreetmap.de/data/land-polygons.html),
+© [OpenStreetMap contributors](https://www.openstreetmap.org/copyright),
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+Обрізаний набір є похідною базою з цією атрибуцією та умовами ODbL;
+адміністративне джерело також зберігає атрибуцію geoBoundaries.
+Посилання на джерела й метод записані в полі `sources` GeoJSON.
+Маска вже округлена до 0,01° (приблизно 1 км), тому це картографічна основа
+для оглядової карти, а не точний геодезичний берег. Нові перетини округлено до
+п'яти десяткових знаків; це не підвищує точність вихідної маски.
+
+Відтворення з кореня репозиторію (Python 3, Shapely 2.2.0 і Node.js):
+
+```bash
+python -m pip install shapely==2.2.0
+python tools/build_coastline.py
+node scripts/validate-coastline.mjs
+npm run build
+npm run validate
+```
+
+Скрипт відновлює невалідні після округлення полігони маски через `make_valid`,
+відкидає залишкові лінії й точки та зберігає валідні Polygon/MultiPolygon.
+Зовнішні кільця орієнтовані за годинниковою стрілкою, отвори проти неї,
+відповідно до d3-geo. Кожен запуск бере прибережну геометрію із сирого ADM1,
+тому повторне генерування не обрізає берег додатково й дає однаковий файл.
+Валідатор перевіряє морські точки, усі 35 центрів міст, суходіл Криму та
+Севастополя, прапорці, незмінність внутрішніх областей і сферичні площі D3.
+Після запуску legacy-експорту `tools/build_data.mjs` повторіть
+`python tools/build_coastline.py`, оскільки той експорт відновлює морські межі.
 
 ## PDF-версія статті
 
