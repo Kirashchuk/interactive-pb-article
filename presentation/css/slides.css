@@ -305,3 +305,13 @@ html.deck-mode .novelty { font-size: clamp(16px, 1.5vw, 24px); padding: clamp(14
 html:not(.deck-mode) .corner { position: absolute; }
 html:not(.deck-mode) .s-title { padding-top: 64px; }
 html:not(.deck-mode) .hint-keys { display: none; }
+
+/* ---------- кнопка «Читати в PDF» під заголовком ---------- */
+.pdf-btn {
+  display: inline-flex; align-items: center; width: fit-content; max-width: 100%;
+  padding: 12px 20px; border-radius: 11px; background: var(--ink); color: var(--bg);
+  font: 500 clamp(14px, 1vw, 16px)/1.2 var(--f-body); text-decoration: none; letter-spacing: .005em;
+  box-shadow: var(--shadow); transition: background .2s, color .2s, transform .2s;
+}
+.pdf-btn:hover { background: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
+.pdf-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
