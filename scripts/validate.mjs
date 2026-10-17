@@ -18,9 +18,12 @@ await Promise.all([
   access(resolve(root, "dist", "client", "assets", "maps", "resource-share-stability.png")),
   access(resolve(root, "dist", "client", "vendor", "d3.v7.min.js")),
   access(resolve(root, "dist", "client", "Стаття_Бюджети_участі_2015-2026.pdf")),
+  access(resolve(root, "dist", "client", "presentation", "index.html")),
+  access(resolve(root, "dist", "client", "presentation", "data", "deck.json")),
+  access(resolve(root, "dist", "client", "presentation", "data", "geo.json")),
 ]);
 const hosting = JSON.parse(await readFile(hostingPath, "utf8"));
 assert.equal(hosting.project_id, "appgprj_6a66051c8ec881919651cb9567f30924");
 const worker = await import(pathToFileURL(workerPath).href);
 assert.equal(typeof worker.default?.fetch, "function");
-console.log("Validated deployable worker and article assets");
+console.log("Validated deployable worker, article and presentation assets");

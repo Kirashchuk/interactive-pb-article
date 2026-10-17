@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Бюджети участі: презентація</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <meta name="description" content="Інтерактивна презентація статті «Бюджети участі у великих містах України: поширення, верифікація та простежуваність реалізації (2015–2025)»: карти, діаграми та графіки за базою 35 міст.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231C5DCC'/%3E%3Ccircle cx='11' cy='13' r='4' fill='%23fff'/%3E%3Ccircle cx='21' cy='19' r='6' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/deck.css">
+  <link rel="stylesheet" href="css/slides.css">
+  <script>
+    // Режим презентації вмикається до першого кадру, щоб не було «стрибка» розкладки
+    (function () {
+      try { var t = localStorage.getItem("pb-deck-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+      if (matchMedia("(min-width: 900px) and (min-height: 560px)").matches) document.documentElement.classList.add("deck-mode");
+    })();
+  </script>
+  <script src="../vendor/d3.v7.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+<div class="corner">
+  <a href="../" title="Інтерактивна стаття">Стаття ↗</a>
+  <button type="button" id="theme-btn" aria-label="Перемкнути тему">Тема: авто</button>
+</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 1. ТИТУЛ ============ -->
+  <section class="slide s-title" id="title" data-section="Вступ" data-init="title" aria-label="Титульний слайд">
+    <svg class="contours" id="contours" aria-hidden="true"></svg>
+    <header class="s-head">
+      <p class="eyebrow"><span>Суспільна географія · урбаністика · відкриті дані</span></p>
+    </header>
+    <div class="s-body title-body">
+      <div class="title-text">
+        <h1>Бюджети участі у&nbsp;великих містах України</h1>
+        <p class="title-sub">Поширення, верифікація та простежуваність реалізації, 2015–2025</p>
+        <p class="author">Анатолій Киращук</p>
+        <div class="title-keys">
+          <span><b class="mono">35</b> міст</span>
+          <span><b class="mono">385</b> позицій «місто–рік»</span>
+          <span><b class="mono">11</b> років</span>
+        </div>
+        <p class="hint-keys"><kbd>→</kbd> далі <kbd>O</kbd> зміст <kbd>F</kbd> повний екран</p>
+      </div>
+      <figure class="vis title-map" aria-label="Карта: міста запроваджують бюджет участі, 2015–2020">
+        <svg id="title-map"></svg>
+        <div class="title-year" aria-live="off"><b id="title-year">2015</b><span id="title-count">3 міста</span></div>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Чернетка статті · жовтень 2026</span><span>База «місто–рік», 35 міст × 2015–2025</span></footer>
+  </section>
+
+  <!-- ============ 2. ЩО ТАКЕ БУ ============ -->
+  <section class="slide" id="shcho-take" data-section="Вступ" data-init="cycle">
+    <header class="s-head">
+      <p class="eyebrow"><span>Вступ</span><span class="num"></span></p>
+      <h2>Частину міського бюджету розподіляють мешканці</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <p>Мешканці пропонують проєкти, голосують, а переможців фінансують із місцевого бюджету.</p>
+        <p class="note">Думка мешканців пов’язана з реальними коштами та зміною міського простору.</p>
+        <div class="cycle-detail" id="cycle-detail" aria-live="polite"></div>
+        <p class="note">Arnstein, 1969 · Fung, 2006 · Плоский, 2016</p>
+      </aside>
+      <figure class="vis" aria-label="Цикл бюджету участі">
+        <svg id="cycle-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Синоніми: громадський бюджет, партиципаторний бюджет, бюджет громадських ініціатив</span></footer>
+  </section>
+
+  <!-- ============ 3. ЛОГІКИ ============ -->
+  <section class="slide" id="lohiky" data-section="Вступ" data-init="logics">
+    <header class="s-head">
+      <p class="eyebrow"><span>Вступ</span><span class="num"></span></p>
+      <h2>Українська модель ближча до доброврядної логіки</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <p>Правила визначають положення міських рад, а не самі учасники.</p>
+        <div class="fung">
+          <div><span>Хто бере участь</span><b>відкритий самовідбір</b></div>
+          <div><span>Як ухвалюють</span><b>голосування, агрегування переваг</b></div>
+          <div><span>Повноваження</span><b>обмежені невеликим фондом</b></div>
+        </div>
+        <p class="note">Виміри — за Fung (2006); логіки — за Cabannes, Lipietz (2018). Бюджет участі зазвичай охоплює &lt; 5% капітального бюджету.</p>
+      </aside>
+      <figure class="vis" aria-label="Трикутник логік бюджету участі">
+        <svg id="logics-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Натисніть вершину трикутника, щоб прочитати опис логіки</span></footer>
+  </section>
+
+  <!-- ============ 4. ПРАВИЛА ============ -->
+  <section class="slide" id="pravyla" data-section="Вступ" data-init="rules">
+    <header class="s-head">
+      <p class="eyebrow"><span>Правила конкурсів</span><span class="num"></span></p>
+      <h2>Єдиної моделі немає: кошториси різняться в рази</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big accent"><b>27<small>/35</small></b><span>міст, досліджених EGAP, хоча б в одному циклі ділили проєкти на малі й великі</span></div>
+        <div>
+          <h3>Фонд — з різними знаменниками</h3>
+          <div class="chips rule-chips">
+            <span class="chip">0,5–3% доходів бюджету розвитку</span>
+            <span class="chip">≤ 1% доходів · Вінниця</span>
+            <span class="chip">1% бюджету · Чернігів, 2015</span>
+            <span class="chip">≥ 0,1% бюджету · Полтава</span>
+            <span class="chip">5 млн грн/рік · Черкаси</span>
+            <span class="chip">5 → 8 млн грн · Суми, 2017–2020</span>
+          </div>
+        </div>
+        <p class="note">Підписний поріг: зазвичай 10–20, у Запоріжжі 100–300. Лише електронне голосування — Київ, Одеса, Харків.</p>
+      </aside>
+      <div class="vis rules-vis">
+        <div class="rules-top">
+          <h3>Граничний кошторис одного проєкту, тис. грн <span class="muted">(логарифмічна шкала)</span></h3>
+          <svg id="caps-svg" class="caps-svg"></svg>
+        </div>
+        <div class="rules-bottom">
+          <h3>Платформи участі</h3>
+          <svg id="platforms-svg" class="platforms-svg"></svg>
+        </div>
+      </div>
+    </div>
+    <footer class="s-foot"><span><b>Джерело:</b> EGAP (2020), положення міських рад</span><span>У 2019 р. конкурсів не було в Житомирі, Сумах, Черкасах і Сєвєродонецьку</span></footer>
+  </section>
+
+  <!-- ============ 5. МЕТА ============ -->
+  <section class="slide" id="meta" data-section="Вступ">
+    <header class="s-head">
+      <p class="eyebrow"><span>Мета і завдання</span><span class="num"></span></p>
+      <h2>Просторово-часовий аналіз поширення та реалізації бюджетів участі</h2>
+    </header>
+    <div class="s-body tasks">
+      <article class="task">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 46h52M12 46V34m10 12V24m10 22V30m10 16V16m10 30V20" /><circle cx="42" cy="12" r="4" /></svg>
+        <span class="mono">01</span>
+        <h3>Поширення в часі</h3>
+        <p>Як механізм охоплював 35 міст у 2015–2025 рр.</p>
+      </article>
+      <article class="task">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" /><path d="M32 10v22l15 15" /></svg>
+        <span class="mono">02</span>
+        <h3>Частка у видатках</h3>
+        <p>Яка вага бюджету участі в міських видатках і наскільки вона чутлива до способу обліку.</p>
+      </article>
+      <article class="task">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="26" width="36" height="28" rx="3" /><path d="M24 26V12h16v14M26 38h12" /></svg>
+        <span class="mono">03</span>
+        <h3>Активність і результати</h3>
+        <p>Як співвідносяться заявки, голоси та переможці.</p>
+      </article>
+      <p class="novelty"><span class="mono">Новизна</span> Від окремих кейсів — до 35 великих міст України в єдиній системі показників.</p>
+    </div>
+    <footer class="s-foot"><span>Мета статті</span></footer>
+  </section>
+
+  <!-- ============ 6. РАМКА ============ -->
+  <section class="slide" id="ramka" data-section="Методи" data-init="frame">
+    <header class="s-head">
+      <p class="eyebrow"><span>Матеріали і методи</span><span class="num"></span></p>
+      <h2>35 великих міст: 34 понад 100 тис. мешканців і Сєвєродонецьк</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="seg" role="group" aria-label="Колір міст">
+          <button type="button" data-frame="region" aria-pressed="true">Макрорегіон</button>
+          <button type="button" data-frame="size" aria-pressed="false">Людність</button>
+        </div>
+        <div class="legend" id="frame-legend"></div>
+        <div class="bigs">
+          <div class="big"><b>16</b><span>міст Півдня і Сходу — найбільша група</span></div>
+          <div class="big alert"><b>4</b><span>в окупації після 24.02.2022</span></div>
+        </div>
+        <p class="note">Розмір кола — людність на 01.01.2022. Окуповані з 2014 р. міста й Крим поза рамкою.</p>
+      </aside>
+      <figure class="vis" aria-label="Карта 35 міст вибірки">
+        <svg id="frame-map"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span><b>Джерело:</b> Держстат, чисельність населення на 01.01.2022</span><span>Клік по місту — профіль</span></footer>
+  </section>
+
+  <!-- ============ 7. ДАНІ ============ -->
+  <section class="slide" id="dani" data-section="Методи" data-init="completeness">
+    <header class="s-head">
+      <p class="eyebrow"><span>Інформаційна база</span><span class="num"></span></p>
+      <h2>База «місто–рік»: 35 × 11 = 385 позицій</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big accent"><b>161</b><span>позиція має всі три показники — заявки, переможців і суму (41,8%)</span></div>
+        <div class="legend" id="compl-legend"></div>
+        <p>Найповніший і зіставний період — <b>2018–2021</b>: є видатки міст.</p>
+        <p class="note">Джерела: e-DEM, «Громадський проєкт», data.gov.ua, рішення і звіти міських рад. У 2020–2021 рр. 34 з 35 міст перейшли на бюджети громад.</p>
+      </aside>
+      <figure class="vis tall" aria-label="Заповненість бази даних за містами і роками">
+        <svg id="compl-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Порожня клітинка ≠ нуль: показник не підтверджено джерелом</span></footer>
+  </section>
+
+  <!-- ============ 8. ДИФУЗІЯ ============ -->
+  <section class="slide" id="dyfuziya" data-section="Результати" data-init="diffusion">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · поширення</span><span class="num"></span></p>
+      <h2>Дифузія була швидкою: 29 з 35 міст — до 2017 року</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big accent"><b id="diff-big">83<small>%</small></b><span id="diff-big-cap">міст запустили бюджет участі до 2017 р.</span></div>
+        <div class="reg-bars" id="diff-regions" aria-label="Частка міст із запущеним бюджетом участі за макрорегіонами"></div>
+        <p class="note">Перші конкурси 2015 р.: Черкаси (54 заявки, 6 переможців) і Чернігів (73 і 17); у Луцьку — схожий конкурс громадських ініціатив.</p>
+      </aside>
+      <div class="vis diff-vis">
+        <div class="controls">
+          <button type="button" class="play" id="diff-play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z" /></svg><span>Відтворити</span></button>
+          <div class="legend" id="diff-legend"></div>
+        </div>
+        <div class="diff-map"><svg id="diff-map"></svg><div class="map-year" id="diff-year">2016</div></div>
+        <svg id="diff-strip" class="diff-strip" aria-label="Міста з переможцями за роками"></svg>
+      </div>
+    </div>
+    <footer class="s-foot"><span>Рік — перший рік прийняття/запуску бюджету участі</span><span>Клік по стовпчику — обрати рік</span></footer>
+  </section>
+
+  <!-- ============ 9. КОШТИ ============ -->
+  <section class="slide" id="koshty" data-section="Результати" data-init="funds">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · обсяги</span><span class="num"></span></p>
+      <h2>3,4 млрд грн за 2015–2021 рр. у цінах 2021 року</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="bigs">
+          <div class="big"><b>26,9<small>тис.</small></b><span>заявок, 2015–2025</span></div>
+          <div class="big"><b>6,2<small>тис.</small></b><span>проєктів-переможців</span></div>
+          <div class="big accent"><b>3,07<small>млрд</small></b><span>грн документованих коштів (номінально)</span></div>
+        </div>
+        <p class="note">Майже 1,4 тис. заявок — у конкурсах, перерваних війною або без визначених переможців.</p>
+      </aside>
+      <div class="vis funds-vis">
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Ціни">
+            <button type="button" data-funds="real" aria-pressed="true">Ціни 2021 р.</button>
+            <button type="button" data-funds="nominal" aria-pressed="false">Номінально</button>
+          </div>
+          <div class="seg" role="group" aria-label="Показник">
+            <button type="button" data-fundsm="amount" aria-pressed="true">Кошти, млн грн</button>
+            <button type="button" data-fundsm="cities" aria-pressed="false">Міста з переможцями</button>
+            <button type="button" data-fundsm="share" aria-pressed="false">% видатків 35 міст</button>
+          </div>
+        </div>
+        <div class="fill-wrap"><svg id="funds-svg"></svg></div>
+      </div>
+    </div>
+    <footer class="s-foot"><span><b>Ціни 2021 р.:</b> ІСЦ грудень до грудня, Держстат</span><span>«% видатків» — відомі суми ÷ видатки всіх 35 міст (документований мінімум)</span></footer>
+  </section>
+
+  <!-- ============ 10. КОНЦЕНТРАЦІЯ ============ -->
+  <section class="slide" id="kontsentratsiya" data-section="Результати" data-init="treemap">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · обсяги</span><span class="num"></span></p>
+      <h2>Майже 60% коштів — у п’яти містах</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big accent"><b>59,9<small>%</small></b><span>документованих коштів 2015–2025 рр.: Київ, Одеса, Львів, Дніпро, Харків</span></div>
+        <ol class="top5" id="top5"></ol>
+        <div class="legend" id="tree-legend"></div>
+      </aside>
+      <figure class="vis" aria-label="Деревоподібна діаграма коштів за містами">
+        <svg id="tree-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Площа прямокутника — сума коштів міста за унікальні цикли 2015–2025 рр., номінально</span></footer>
+  </section>
+
+  <!-- ============ 11. ЧАСТКА ============ -->
+  <section class="slide" id="chastka" data-section="Результати" data-init="share">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · фінансова вага</span><span class="num"></span></p>
+      <h2>Бюджет участі — це близько 0,3% видатків міста</h2>
+    </header>
+    <div class="s-body split wide-cap">
+      <aside class="cap">
+        <div class="waffle-wrap">
+          <svg id="waffle" class="waffle" role="img" aria-label="1000 гривень видатків, з них 3 — бюджет участі"></svg>
+          <p class="waffle-cap"><b class="mono">3 грн</b> з кожної <b class="mono">1000 грн</b> видатків</p>
+        </div>
+        <div class="bigs">
+          <div class="big accent"><b>0,299<small>%</small></b><span>медіана — «типове» місто</span></div>
+          <div class="big"><b>0,306<small>%</small></b><span>зважена частка — усі кошти ÷ усі бюджети</span></div>
+        </div>
+      </aside>
+      <div class="vis share-vis">
+        <h3>Зважена частка за містами, 2018–2021 рр., %</h3>
+        <div class="fill-wrap"><svg id="share-svg"></svg></div>
+      </div>
+    </div>
+    <footer class="s-foot"><span>113 зіставних пар «сума БУ + бюджет міста» одного року, 34 міста</span><span>Основа суми: 55 лімітів, 57 кошторисів переможців, 1 офіційний розподіл</span></footer>
+  </section>
+
+  <!-- ============ 12. КАРТОСХЕМА ============ -->
+  <section class="slide" id="kartoskhema" data-section="Результати" data-init="choropleth">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · картосхема</span><span class="num"></span></p>
+      <h2>Міста тримають свої місця в рейтингу частки</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="seg seg-col" role="group" aria-label="Показник на карті">
+          <button type="button" data-cm="share" aria-pressed="true">Частка у видатках</button>
+          <button type="button" data-cm="uah" aria-pressed="false">Грн на мешканця</button>
+          <button type="button" data-cm="appsK" aria-pressed="false">Заявок на 1 тис.</button>
+        </div>
+        <div class="legend" id="cm-legend"></div>
+        <ol class="rank" id="cm-rank"></ol>
+      </aside>
+      <figure class="vis" aria-label="Картосхема показників бюджету участі">
+        <svg id="cm-map"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Середні за зіставні роки 2018–2021</span><span>Колір — клас показника, розмір кола — грн на мешканця на рік</span></footer>
+  </section>
+
+  <!-- ============ 13. ГРУПИ ============ -->
+  <section class="slide" id="hrupy" data-section="Результати" data-init="groups">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · групи міст</span><span class="num"></span></p>
+      <h2 id="groups-h">Захід — найвища частка, Південь і Схід — найменший ресурс на мешканця</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="seg" role="group" aria-label="Групування">
+          <button type="button" data-gk="region" aria-pressed="true">Макрорегіони</button>
+          <button type="button" data-gk="size" aria-pressed="false">Людність</button>
+        </div>
+        <p id="groups-cap">Міста західної частини мають найвищі медіанні частки, а південної та східної — удвічі менший ресурс на мешканця.</p>
+        <p class="note">Диференціація не пояснюється активністю мешканців чи людністю, але узгоджується з правилами конкурсів: граничними кошторисами і способом визначення фонду.</p>
+      </aside>
+      <figure class="vis" aria-label="Показники за групами міст">
+        <svg id="groups-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Табл. 2 статті · 2018–2021 рр., 113 пар</span><span>Медіани — за парами «місто–рік»</span></footer>
+  </section>
+
+  <!-- ============ 14. ВІЙНА ============ -->
+  <section class="slide" id="viina" data-section="Результати" data-init="war">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · після 24.02.2022</span><span class="num"></span></p>
+      <h2>Мережа програм різко звузилася: 4 з 35 міст</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big alert"><b>2,8<small>%</small></b><span>реальний обсяг 2023–2025 рр. від довоєнного (96 млн проти 3 381 млн грн у цінах 2021 р.)</span></div>
+        <div class="legend" id="war-legend"></div>
+        <div class="monitor">
+          <div><span class="mono">40 → 7</span> міст передбачали кошти на ГБ: 2021 → 2025 <em>«Прозорі міста», 50 найбільших міст</em></div>
+          <div><span class="mono">134 → 13</span> конкурсів: 2022 → 2023 <em>DECIDE, Руденко (2025)</em></div>
+        </div>
+      </aside>
+      <figure class="vis" aria-label="Карта стану бюджетів участі у 2023–2025 рр.">
+        <svg id="war-map"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>У містах, де бюджет участі не призупинявся, відносна вага видатків не зменшилася</span></footer>
+  </section>
+
+  <!-- ============ 15. РЕАЛІЗАЦІЯ ============ -->
+  <section class="slide" id="realizatsiia" data-section="Результати" data-init="implementation">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · простежуваність</span><span class="num"></span></p>
+      <h2>Реалізацію видно лише з джерелом і датою статусу</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <div class="big accent"><b>77<small>%</small></b><span>переможців реалізовано: 1 446 з 1 879 у 49 довоєнних когортах 11 міст («Громадський проєкт», 23.07.2026)</span></div>
+        <div class="legend" id="impl-legend"></div>
+        <p class="note">Офіційні звіти й реєстри фіксують високу, але різну за когортами й датами завершеність.</p>
+      </aside>
+      <figure class="vis" aria-label="Статуси реалізації проєктів-переможців за когортами">
+        <svg id="impl-svg"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span><b>Джерела:</b> звіти КМДА, реєстр Білоцерківської міськради, відкриті дані міст, платформа «Громадський проєкт»</span></footer>
+  </section>
+
+  <!-- ============ 16. ГОЛОСУВАННЯ ============ -->
+  <section class="slide" id="holosuvannia" data-section="Результати" data-init="votes">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · інтенсивність участі</span><span class="num"></span></p>
+      <h2>Голосування зростало щороку, але розрив між містами — понад 70 разів</h2>
+    </header>
+    <div class="s-body split">
+      <aside class="cap">
+        <svg id="votes-med" class="votes-med" aria-label="Медіана голосів на 1 тис. мешканців, 2016–2019"></svg>
+        <div class="big"><b>1,93<small>млн</small></b><span>голосів віддано у 2019 р.</span></div>
+        <p class="chip warn">Голос ≠ учасник: в багатьох містах одна особа голосує за кілька проєктів</p>
+      </aside>
+      <div class="vis votes-vis">
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Рік голосування" id="votes-years"></div>
+          <span class="note" id="votes-note"></span>
+        </div>
+        <div class="fill-wrap"><svg id="votes-svg"></svg></div>
+      </div>
+    </div>
+    <footer class="s-foot"><span><b>Джерело:</b> діаграми EGAP (2020, с. 17–19); населення — 01.01.2022</span><span>Щороку зростали Івано-Франківськ, Київ, Кривий Ріг, Полтава</span></footer>
+  </section>
+
+  <!-- ============ 17. ТИПОЛОГІЯ ============ -->
+  <section class="slide" id="typolohiia" data-section="Результати" data-init="typology">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · типологія</span><span class="num"></span></p>
+      <h2>Сталі практики й краща звітність — на заході</h2>
+    </header>
+    <div class="s-body split wide-cap">
+      <aside class="cap">
+        <div class="matrix" id="type-matrix" role="group" aria-label="Типи міст: натисніть, щоб виділити на карті"></div>
+        <div class="legend" id="type-legend"></div>
+        <p class="note"><b>Сталість</b> — ≥ 6 років із переможцями (медіана 5). <b>Вага</b> — зважена частка 2018–2021 ≥ 0,30%. <b>Прозорість</b> — найсильніше джерело про реалізацію.</p>
+      </aside>
+      <figure class="vis" aria-label="Картосхема типології міст">
+        <svg id="type-map"></svg>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Маріуполь — без зіставних пар</span><span>Переривчасті й фінансово слабкі — переважно на півдні та сході</span></footer>
+  </section>
+
+  <!-- ============ 18. ТЕМАТИКА ============ -->
+  <section class="slide" id="tematyka" data-section="Результати" data-init="themes">
+    <header class="s-head">
+      <p class="eyebrow"><span>Результати · тематика проєктів</span><span class="num"></span></p>
+      <h2>Освіта домінує серед переможців</h2>
+    </header>
+    <div class="s-body split wide-cap">
+      <aside class="cap">
+        <h3>Частка серед поданих → серед переможців, %</h3>
+        <svg id="themes-svg" class="themes-svg" aria-label="Частки тем серед поданих і переможців"></svg>
+        <div class="bigs">
+          <div class="big"><b>56<small>%</small></b><span>переможців — освіта, Київ 2019</span></div>
+          <div class="big"><b>95<small>%</small></b><span>Хмельницький 2017</span></div>
+        </div>
+        <p class="note">EGAP пояснює це мобілізацією батьків (EGAP, 2016–2019).</p>
+      </aside>
+      <div class="vis after22">
+        <h3>Після 2022 р. — безпека й соціальна підтримка</h3>
+        <div class="pictos" id="pictos"></div>
+        <p class="note">Khodan, Burtnyak, 2025 · Brovko, Blanco de Freitas, 2026</p>
+      </div>
+    </div>
+    <footer class="s-foot"><span>Після 2022 р. частина мереж участі переорієнтувалася на волонтерські та військові завдання (Schmäing, 2025)</span></footer>
+  </section>
+
+  <!-- ============ 19. ВИСНОВКИ ============ -->
+  <section class="slide" id="vysnovky" data-section="Висновки" data-init="conclusions">
+    <header class="s-head">
+      <p class="eyebrow"><span>Висновки</span><span class="num"></span></p>
+      <h2>Що показав аналіз 35 міст</h2>
+    </header>
+    <div class="s-body concl">
+      <article><h3>Поширення</h3><b class="mono">83%</b><svg class="mini" data-mini="spread" role="img" aria-label="Міст із запущеним бюджетом участі, 2015–2020"></svg><p>У 2015–2021 рр. бюджет участі став поширеним інструментом: 29 з 35 міст запустили його до 2017 р.</p></article>
+      <article><h3>Фінансова вага</h3><b class="mono">0,3%</b><svg class="mini" data-mini="share" role="img" aria-label="Частки міст у видатках"></svg><p>Невелика частка видатків, диференціація між містами в 6,7 раза за стабільної ієрархії; узгоджується з правилами конкурсів.</p></article>
+      <article><h3>Простір</h3><b class="mono">Захід</b><svg class="mini" data-mini="space" role="img" aria-label="Міста зі сталою практикою на карті"></svg><p>Сталі практики й краща звітність — на заході; переривчасті й фінансово слабкі — на півдні та сході.</p></article>
+      <article class="war"><h3>Війна</h3><b class="mono">4/35</b><svg class="mini" data-mini="war" role="img" aria-label="Кошти бюджетів участі у цінах 2021 р."></svg><p>Після 2022 р. бюджет участі зберігся в 4 містах; реальний обсяг 2023–2025 рр. — 2,8% довоєнного.</p></article>
+    </div>
+    <footer class="s-foot"><span>Висновки статті</span></footer>
+  </section>
+
+  <!-- ============ 20. РЕЄСТР ============ -->
+  <section class="slide" id="reiestr" data-section="Висновки" data-init="registry">
+    <header class="s-head">
+      <p class="eyebrow"><span>Рекомендація</span><span class="num"></span></p>
+      <h2>Потрібен єдиний пооб’єктний реєстр бюджетів участі</h2>
+    </header>
+    <div class="s-body split wide-cap">
+      <aside class="cap">
+        <p>Уніфікований, верифікований загальнодержавний реєстр — умова наскрізної простежуваності.</p>
+        <ul class="law">
+          <li><span class="mono">Закон № 3703-IX</span>право жителів брати участь у плануванні й розподілі коштів місцевого бюджету</li>
+          <li><span class="mono">Постанова КМУ № 835</span>дані громадського бюджету — у форматі відкритих даних на data.gov.ua</li>
+        </ul>
+        <p class="note">Бюджет участі — інструмент залучення мешканців до планів відновлення громад.</p>
+      </aside>
+      <figure class="vis registry" aria-label="Приклад запису реєстру">
+        <svg id="registry-flow" class="registry-flow" aria-hidden="true"></svg>
+        <div class="record" id="record"></div>
+      </figure>
+    </div>
+    <footer class="s-foot"><span>Запис ілюстративний: поля — за рекомендаціями до набору даних (постанова КМУ № 835)</span></footer>
+  </section>
+
+  <!-- ============ 21. ДЖЕРЕЛА ============ -->
+  <section class="slide s-end" id="dzherela" data-section="Висновки" data-init="ending">
+    <svg class="contours" id="contours-end" aria-hidden="true"></svg>
+    <header class="s-head">
+      <p class="eyebrow"><span>Дані, стаття та джерела</span><span class="num"></span></p>
+      <h2 class="thanks">Дякую за увагу</h2>
+    </header>
+    <div class="s-body sources">
+      <div class="links">
+        <p class="author-end">Анатолій Киращук</p>
+        <div class="qr-row">
+          <div class="qr" id="qr" aria-label="QR-код адреси презентації"></div>
+          <p class="note">Презентація на вашому телефоні:<br><span class="mono">kirashchuk.github.io/<wbr>interactive-pb-article/<wbr>presentation</span></p>
+        </div>
+        <a class="linkcard" href="../"><span class="mono">Лонгрід</span><b>Інтерактивна стаття</b><em>kirashchuk.github.io/interactive-pb-article</em></a>
+        <a class="linkcard" href="../Стаття_Бюджети_участі_2015-2026.pdf"><span class="mono">PDF</span><b>Версія статті для друку</b><em>13 сторінок, додатки з картами</em></a>
+      </div>
+      <ol class="refs">
+        <li>Arnstein, S. R. (1969). A ladder of citizen participation. <i>JAIP</i>, 35(4).</li>
+        <li>Cabannes, Y., Lipietz, B. (2018). Revisiting the democratic promise of PB. <i>Environment and Urbanization</i>, 30(1).</li>
+        <li>Fung, A. (2006). Varieties of participation in complex governance. <i>PAR</i>, 66(s1).</li>
+        <li>Sintomer, Y., Herzberg, C., Röcke, A. (2008). PB in Europe. <i>IJURR</i>, 32(1).</li>
+        <li>Kołat, K. et al. (2022). PB in Częstochowa. <i>IJERPH</i>, 19(9).</li>
+        <li>Schmäing, S. (2024; 2025). <i>European Societies</i>; <i>Post-Soviet Affairs</i>.</li>
+        <li>Khodan, M., Burtnyak, I. (2025). <i>Public and Municipal Finance</i>, 14(4).</li>
+        <li>Brovko, O., Blanco de Freitas, R. (2026). <i>Revista Brasileira de Políticas Públicas</i>, 16(1).</li>
+        <li>EGAP (2020). Дослідження розвитку інструменту «Громадський бюджет» у містах України.</li>
+        <li>Плоский, К. (2016). Партиципаторний бюджет: аналітичний звіт. ПРОМІС.</li>
+        <li>«Прозорі міста» (2026). Голос громади у 2025-му.</li>
+        <li>Руденко, О. М. (2025). <i>Актуальні проблеми державного управління</i>, 2(67).</li>
+        <li>Open Budget, Мінфін: API localBudgetData (23.07.2026).</li>
+        <li>Закон України № 3703-IX (2024); постанова КМУ № 835 (2015); наказ Мінфіну № 94 (2020).</li>
+      </ol>
+    </div>
+    <footer class="s-foot"><span>Картооснова: geoBoundaries UKR ADM1 (CC BY 4.0), OpenStreetMap land polygons (ODbL), Natural Earth (public domain)</span></footer>
+  </section>
+
+</main>
+
+<nav class="nav" id="nav" aria-label="Навігація слайдами">
+  <button type="button" class="btn" id="prev" aria-label="Попередній слайд"><svg viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" /></svg></button>
+  <span class="sec-name" id="sec-name">Вступ</span>
+  <div class="ticks" id="ticks"></div>
+  <span class="count" id="count"><b>1</b> / 21</span>
+  <button type="button" class="btn" id="next" aria-label="Наступний слайд"><svg viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" /></svg></button>
+  <button type="button" class="btn" id="toc-btn" aria-label="Зміст (O)"><svg viewBox="0 0 16 16"><path d="M2 3h4v4H2zM10 3h4v4h-4zM2 9h4v4H2zM10 9h4v4h-4z" /></svg></button>
+  <button type="button" class="btn" id="fs-btn" aria-label="Повний екран (F)"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" /></svg></button>
+</nav>
+
+<div class="toc" id="toc" hidden role="dialog" aria-label="Зміст презентації"></div>
+<aside class="drawer" id="drawer" aria-label="Профіль міста" aria-hidden="true"></aside>
+<div class="tip" id="tip" hidden></div>
+
+<noscript><p style="padding:16px">Інтерактивні карти й графіки потребують JavaScript.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,307 @@
+/* Оформлення окремих слайдів */
+.slide:focus { outline: none; }
+.muted { color: var(--muted); font-weight: 400; }
+.fill-wrap { position: relative; flex: 1; min-height: 0; }
+.fill-wrap > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.boot-error { margin: 0; padding: 14px 16px; background: var(--alert-soft); color: var(--ink); font-size: 14px; }
+kbd {
+  display: inline-block; min-width: 22px; padding: 2px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px;
+  font: 500 11.5px/1.3 var(--f-mono); color: var(--ink-2); background: var(--surface); text-align: center; margin: 0 4px 0 10px;
+}
+kbd:first-child { margin-left: 0; }
+.x-ico { position: relative; width: 11px; height: 11px; background: none !important; }
+.x-ico::before, .x-ico::after { content: ""; position: absolute; left: 50%; top: -1px; width: 2px; height: 13px; background: var(--alert); transform: rotate(45deg); }
+.x-ico::after { transform: rotate(-45deg); }
+
+/* ---------- 1. титул ---------- */
+.s-title { overflow: hidden; }
+.contours { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.s-title > :not(.contours) { position: relative; z-index: 1; }
+.title-body { grid-template-columns: 1fr; align-items: center; }
+.title-text { display: flex; flex-direction: column; gap: clamp(14px, 1.6vw, 26px); min-width: 0; }
+.s-title h1 { font: 700 clamp(34px, 4.6vw, 86px)/1.02 var(--f-disp); letter-spacing: -.035em; max-width: 13ch; }
+.title-sub { margin: 0; font: 400 clamp(17px, 1.5vw, 26px)/1.35 var(--f-body); color: var(--ink-2); max-width: 30ch; }
+.author { margin: 0; font: 600 clamp(15px, 1.1vw, 19px)/1.3 var(--f-body); display: flex; align-items: center; gap: 12px; }
+.author::before { content: ""; width: 28px; height: 2px; background: var(--accent); }
+.title-keys { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: clamp(13px, .95vw, 15px); color: var(--muted); }
+.title-keys b { color: var(--ink); font-size: 1.35em; font-weight: 600; margin-right: 4px; }
+.hint-keys { margin: 0; font-size: 12.5px; color: var(--muted); }
+.title-map { min-height: 300px; }
+.title-year { position: absolute; left: 6px; bottom: 6px; display: flex; flex-direction: column; gap: 2px; pointer-events: none; }
+.title-year b { font: 700 clamp(36px, 4.4vw, 78px)/1 var(--f-disp); letter-spacing: -.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.title-year span { font: 500 13px var(--f-mono); color: var(--muted); }
+.tdot { fill: var(--surface); stroke: var(--faint); stroke-width: 1; transition: fill .5s, stroke .5s; cursor: pointer; }
+.tdot.on { fill: var(--accent); stroke: var(--surface); stroke-width: 1.4; }
+.tdot.new { fill: var(--amber); }
+.pulse { fill: none; stroke: var(--amber); stroke-width: 2; pointer-events: none; }
+.s-title .map-sea { fill: transparent; }
+.s-title .map-ctx { fill: color-mix(in srgb, var(--land-ctx) 55%, transparent); }
+html.deck-mode .title-body { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+html.deck-mode .title-map { height: 100%; }
+
+/* ---------- 2. цикл ---------- */
+.cycle-detail { border-left: 3px solid var(--amber); padding: 10px 0 10px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 108px; }
+.cycle-detail .mono { font: 500 11.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.cycle-detail b { font: 600 clamp(16px, 1.25vw, 21px)/1.3 var(--f-body); }
+.cycle-detail em { font-style: normal; font: 500 13px/1.4 var(--f-mono); color: var(--muted); }
+.cyc-node { cursor: pointer; outline: none; }
+.cyc-node circle { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: fill .3s, stroke .3s; }
+.cyc-node path { fill: none; stroke: var(--ink-2); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s; }
+.cyc-node:hover circle, .cyc-node:focus-visible circle { stroke: var(--accent); }
+.cyc-node.on circle { fill: var(--accent); stroke: var(--accent); }
+.cyc-node.on path { stroke: var(--accent-ink); }
+.cyc-num { font: 500 10.5px var(--f-mono); fill: var(--faint); letter-spacing: .1em; }
+.cyc-lbl { font: 600 15px var(--f-body); fill: var(--ink); }
+.cyc-node.on .cyc-lbl { fill: var(--accent); }
+.cyc-c1 { font: 600 clamp(15px, 1.4vw, 22px) var(--f-disp); fill: var(--ink); }
+.cyc-c2 { font: 500 14px var(--f-body); fill: var(--muted); }
+
+/* ---------- 3. логіки ---------- */
+.fung { display: flex; flex-direction: column; gap: 8px; }
+.fung div { display: grid; grid-template-columns: 9.5em 1fr; gap: 10px; align-items: baseline; padding-bottom: 8px; border-bottom: 1px solid var(--line-2); }
+.fung span { font: 500 11px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.fung b { font: 600 clamp(14px, 1.05vw, 17px)/1.3 var(--f-body); }
+.lg-v { cursor: pointer; outline: none; }
+.lg-v circle { fill: var(--surface); stroke: var(--ink-2); stroke-width: 2; transition: fill .25s; }
+.lg-v.on circle, .lg-v:hover circle, .lg-v:focus-visible circle { fill: var(--accent); stroke: var(--accent); }
+.lg-t { font: 600 clamp(14px, 1.2vw, 19px) var(--f-disp); fill: var(--ink); }
+.lg-s { font: 400 13px var(--f-body); fill: var(--muted); }
+.lg-ua { cursor: pointer; outline: none; }
+.lg-ua circle { fill: var(--amber); stroke: var(--surface); stroke-width: 2; }
+.lg-ua .halo { fill: var(--amber); opacity: .18; stroke: none; animation: halo 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.lg-ua text { font: 600 15px var(--f-body); fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+@keyframes halo { 0%, 100% { transform: scale(.75); opacity: .28; } 50% { transform: scale(1.25); opacity: .1; } }
+.logic-card {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(560px, 100%);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 3px;
+}
+.logic-card b { font: 600 15px var(--f-body); color: var(--accent); }
+.logic-card span { font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+
+/* ---------- 4. правила ---------- */
+.rules-vis { display: flex; flex-direction: column; gap: 18px; }
+.rules-top { flex: 1.6; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+.rules-bottom { flex: none; display: flex; flex-direction: column; gap: 8px; }
+.caps-svg { flex: 1; width: 100%; min-height: 180px; display: block; }
+.platforms-svg { width: 100%; height: 64px; display: block; }
+.cap-city { font: 600 13.5px var(--f-body); fill: var(--ink); }
+.bl { font: 600 11.5px var(--f-mono); fill: var(--accent-ink); pointer-events: none; }
+.pl-n { font: 700 15px var(--f-mono); fill: var(--accent-ink); }
+.pl-t { font: 500 12.5px var(--f-body); fill: var(--ink-2); }
+.rule-chips .chip { font-size: 12.5px; }
+
+/* ---------- 5. мета ---------- */
+.tasks { grid-template-columns: 1fr; gap: clamp(14px, 1.6vw, 26px); align-content: center; }
+.task { border-top: 2px solid var(--ink); padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.task svg { width: 54px; height: 54px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.task .mono { color: var(--accent); font-size: 12px; letter-spacing: .14em; }
+.task h3 { font: 600 clamp(18px, 1.6vw, 28px)/1.15 var(--f-disp); }
+.task p { margin: 0; color: var(--ink-2); font-size: clamp(15px, 1.1vw, 18px); max-width: 32ch; }
+.novelty { margin: 0; padding: 14px 18px; border-radius: 12px; background: var(--accent-soft); font: 500 clamp(15px, 1.2vw, 20px)/1.4 var(--f-body); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.novelty .mono { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+html.deck-mode .tasks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+html.deck-mode .novelty { grid-column: 1 / -1; }
+
+/* ---------- 8. дифузія ---------- */
+.diff-vis { display: flex; flex-direction: column; gap: 10px; }
+.diff-map { position: relative; flex: 1; min-height: 260px; }
+.diff-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.diff-strip { width: 100%; height: 118px; flex: none; display: block; }
+.map-year { position: absolute; left: 14px; top: 8px; font: 700 clamp(34px, 3.6vw, 64px)/1 var(--f-disp); letter-spacing: -.04em; color: var(--accent); pointer-events: none; font-variant-numeric: tabular-nums; }
+.city.st-pre { fill: none; stroke: var(--faint); stroke-width: 1.2; stroke-dasharray: 2 2; }
+.city.st-win { fill: var(--accent); stroke: var(--surface); stroke-width: 1.2; }
+.city.st-nowin { fill: var(--surface); stroke: var(--accent); stroke-width: 2.2; }
+.city.st-new { fill: var(--amber); stroke: var(--surface); stroke-width: 1.4; }
+.city.st-occ { fill: var(--surface); stroke: var(--alert); stroke-width: 1; }
+.new-lbl { fill: var(--ink); font-weight: 600; }
+.reg-bars { display: flex; flex-direction: column; gap: 9px; }
+.rb { display: grid; grid-template-columns: 8.5em 1fr 3.4em; gap: 10px; align-items: center; font-size: 13.5px; }
+.rb .track { height: 9px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.rb .track i { display: block; height: 100%; border-radius: 5px; transition: width .45s ease; }
+.rb b { font-size: 13px; text-align: right; }
+.sb:focus-visible rect:first-child { stroke: var(--accent); stroke-width: 2; }
+
+/* ---------- 9. кошти ---------- */
+.funds-vis, .share-vis, .votes-vis { display: flex; flex-direction: column; gap: 10px; }
+.seg button:disabled { opacity: .35; cursor: default; }
+
+/* ---------- 10. деревоподібна ---------- */
+.top5 { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.top5 li { display: grid; grid-template-columns: 7em 1fr 3.6em; gap: 10px; align-items: center; font-size: 14.5px; }
+.top5 i { display: block; height: 8px; border-radius: 4px; }
+.top5 b { text-align: right; font-size: 13.5px; }
+.tm rect { transition: fill-opacity .2s; }
+.tm:hover rect { fill-opacity: .85 !important; }
+.tm-n { font: 600 12px var(--f-body); fill: var(--bg); pointer-events: none; }
+.tm-v { font: 500 11.5px var(--f-mono); fill: var(--bg); opacity: .9; pointer-events: none; }
+
+/* ---------- 11. частка ---------- */
+.waffle-wrap { display: flex; flex-direction: column; gap: 8px; }
+.waffle { width: 100%; display: block; }
+.wf { fill: var(--surface-2); }
+.wf.on { fill: var(--amber); }
+.waffle-cap { margin: 0; font-size: clamp(14px, 1.05vw, 17px); color: var(--ink-2); }
+.waffle-cap b { color: var(--ink); }
+.hm-lbl { font: 500 12px var(--f-body); fill: var(--ink-2); }
+.sh-row:hover .hm-lbl, .hm-row:hover .hm-lbl { fill: var(--accent); font-weight: 600; }
+
+/* ---------- 12. картосхема ---------- */
+.seg-col { flex-direction: column; width: 100%; }
+.seg-col button { text-align: left; }
+.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; }
+.rank li { display: grid; grid-template-columns: 1.8em 1fr auto; gap: 8px; padding: 2px 6px; margin: 0 -6px; border-radius: 6px; cursor: pointer; line-height: 1.35; }
+.seg-col button { padding-block: 5px; }
+.rank li:hover { background: var(--accent-soft); }
+.rank li .mono { color: var(--faint); font-size: 11px; }
+.rank li b { font-size: 12.5px; font-weight: 500; }
+.rank .rh { cursor: default; font: 500 10.5px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 6px; display: block; }
+.rank .rh:hover { background: none; }
+.legend svg { color: var(--muted); display: block; }
+
+/* ---------- 13. групи ---------- */
+.gp-t { font: 500 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; fill: var(--muted); }
+.gp-l { font: 600 13px var(--f-body); fill: var(--ink); }
+
+/* ---------- 14. війна ---------- */
+.monitor { display: flex; flex-direction: column; gap: 10px; }
+.monitor div { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--ink-2); padding-left: 12px; border-left: 2px solid var(--alert); }
+.monitor .mono { font: 600 clamp(20px, 1.8vw, 30px)/1.1 var(--f-mono); color: var(--ink); }
+.monitor em { font-style: normal; font-size: 12px; color: var(--muted); }
+
+/* ---------- 15. реалізація ---------- */
+.im-c { font: 600 13px var(--f-body); fill: var(--ink); }
+.im-s { font: 400 11px var(--f-mono); fill: var(--muted); }
+.im-p { font: 600 11.5px var(--f-mono); fill: var(--bg); pointer-events: none; }
+
+/* ---------- 16. голосування ---------- */
+.votes-med { width: 100%; display: block; }
+
+/* ---------- 17. типологія ---------- */
+.matrix { display: grid; grid-template-columns: 6.8em 1fr 1fr; gap: 6px; }
+.matrix .mh { font: 500 11px/1.25 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); align-self: end; padding: 0 4px 2px; }
+.matrix .mh.row { align-self: center; }
+.matrix .mh em { font-style: normal; text-transform: none; color: var(--faint); letter-spacing: 0; }
+.mq {
+  text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 10px; cursor: pointer;
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+}
+.mq:hover { border-color: var(--accent); }
+.mq[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.mq-top { display: flex; align-items: center; gap: 8px; }
+.mq-top b { font: 600 22px/1 var(--f-disp); }
+.mq-top em { font-style: normal; font: 500 11px var(--f-mono); color: var(--muted); margin-left: auto; }
+.mq-c { font-size: 11.5px; color: var(--ink-2); line-height: 1.35; }
+
+/* ---------- 18. тематика ---------- */
+.themes-svg { width: 100%; display: block; }
+.after22 { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.pictos { display: flex; flex-direction: column; gap: clamp(14px, 1.8vw, 28px); }
+.pg { display: flex; flex-direction: column; gap: 10px; }
+.pg-t { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.pg.war .pg-t { color: var(--alert); }
+.pg-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.picto { border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px; transition: transform .25s, border-color .25s; }
+.picto:hover { transform: translateY(-3px); border-color: var(--accent); }
+.picto svg { width: clamp(38px, 3.4vw, 56px); height: clamp(38px, 3.4vw, 56px); fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.pg.war .picto svg { stroke: var(--alert); }
+.picto b { font: 600 clamp(13.5px, 1vw, 16px)/1.25 var(--f-body); }
+.picto span { font-size: 12px; color: var(--muted); }
+
+/* ---------- 19. висновки ---------- */
+.concl { grid-template-columns: 1fr; gap: 14px; align-content: center; }
+.concl article { border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: clamp(16px, 1.6vw, 28px); display: flex; flex-direction: column; gap: 10px; }
+.concl article > b { font: 700 clamp(34px, 3.6vw, 66px)/1 var(--f-disp); letter-spacing: -.035em; color: var(--accent); }
+.concl article.war > b { color: var(--alert); }
+.concl h3 { font: 500 11.5px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.concl p { margin: 0; font-size: clamp(14.5px, 1.08vw, 18px); line-height: 1.45; color: var(--ink-2); }
+html.deck-mode .concl { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* ---------- 20. реєстр ---------- */
+.law { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.law li { display: flex; flex-direction: column; gap: 3px; font-size: 14.5px; color: var(--ink-2); padding-left: 12px; border-left: 2px solid var(--accent); }
+.law .mono { font: 600 13px var(--f-mono); color: var(--ink); }
+.registry { display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+.registry-flow { width: 100%; display: block; flex: none; }
+.rf-t { font: 600 13px var(--f-body); }
+.record { border: 1px solid var(--line); background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: clamp(14px, 1.4vw, 22px); display: flex; flex-direction: column; gap: 14px; max-width: 720px; width: 100%; align-self: center; }
+.rec-h { display: flex; justify-content: space-between; align-items: center; }
+.rec-h .mono { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.rec-h em { font-style: normal; font-size: 11.5px; color: var(--muted); border: 1px dashed var(--faint); border-radius: 999px; padding: 2px 9px; }
+.record dl { margin: 0; display: grid; grid-template-columns: minmax(9em, 34%) 1fr; gap: 8px 16px; font-size: 14px; }
+.record dt { color: var(--muted); }
+.record dd { margin: 0; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+.record dd i { color: var(--muted); }
+.st { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; background: var(--surface-2); }
+.st-2, .st-3 { background: var(--amber-soft); color: var(--ink); }
+.st-4 { background: color-mix(in srgb, var(--st-done) 18%, var(--surface)); color: var(--ink); }
+.rec-tl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.rec-tl button { border: 0; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; gap: 6px; text-align: left; min-width: 0; }
+.rec-tl i { display: block; height: 5px; border-radius: 3px; background: var(--line); transition: background .3s; }
+.rec-tl button.on i { background: var(--accent); }
+.rec-tl span { font-size: 11.5px; line-height: 1.25; color: var(--muted); }
+.rec-tl button[aria-pressed="true"] span { color: var(--ink); font-weight: 600; }
+
+/* ---------- 21. джерела ---------- */
+.sources { grid-template-columns: 1fr; align-content: start; }
+.links { display: flex; flex-direction: column; gap: 10px; }
+.linkcard { display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; text-decoration: none; color: var(--ink); transition: border-color .2s; }
+.linkcard:hover { border-color: var(--accent); }
+.linkcard .mono { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.linkcard b { font: 600 17px var(--f-body); }
+.linkcard em { font-style: normal; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.author-end { margin: 8px 0 0; font: 600 clamp(18px, 1.5vw, 24px) var(--f-disp); }
+.refs { margin: 0; padding-left: 1.4em; display: grid; grid-template-columns: 1fr; gap: 6px 26px; font-size: clamp(12.5px, .9vw, 14.5px); color: var(--ink-2); line-height: 1.4; }
+.refs li::marker { color: var(--faint); font-family: var(--f-mono); font-size: .85em; }
+html.deck-mode .sources { grid-template-columns: minmax(240px, 30%) 1fr; }
+html.deck-mode .refs { grid-template-columns: 1fr 1fr; align-content: start; overflow: auto; min-height: 0; font-size: clamp(13px, 1vw, 16px); gap: 10px 32px; }
+
+/* ---------- вузькі екрани (стрічка слайдів) ---------- */
+@media (max-width: 899px), (max-height: 559px) {
+  .diff-vis { height: auto; }
+  .diff-map { height: min(64vh, 460px); flex: none; }
+  .funds-vis .fill-wrap, .share-vis .fill-wrap, .votes-vis .fill-wrap { min-height: 380px; }
+  .share-vis .fill-wrap { min-height: 560px; }
+  .votes-vis .fill-wrap { min-height: 560px; }
+  .rules-vis { height: auto; }
+  .caps-svg { height: 240px; flex: none; }
+  .after22, .registry { height: auto; }
+  .logic-card { position: static; transform: none; width: 100%; margin-top: 8px; }
+  #lohiky .vis { height: auto; display: flex; flex-direction: column; }
+  #lohiky .vis > svg { position: relative; height: 380px; }
+  .vis.registry, .vis.after22, .vis.rules-vis, .vis.diff-vis { min-height: 0; }
+  .title-map { height: 360px; }
+  .s-title h1 { max-width: none; }
+}
+@media (min-width: 700px) and (max-width: 899px) {
+  .tasks, .concl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .refs { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- висновки: міні-графіки ---------- */
+.mini { width: 100%; height: clamp(70px, 11vh, 120px); display: block; }
+html.deck-mode .concl { align-content: stretch; padding-block: clamp(4px, 2vh, 28px); }
+html.deck-mode .concl article { justify-content: flex-start; }
+html.deck-mode .concl article p { margin-top: auto; }
+
+/* ---------- завершення ---------- */
+.s-end { overflow: hidden; }
+.s-end > :not(.contours) { position: relative; z-index: 1; }
+.thanks { font: 700 clamp(34px, 4.4vw, 80px)/1.02 var(--f-disp); letter-spacing: -.035em; }
+.qr-row { display: flex; align-items: center; gap: 14px; }
+.qr { width: clamp(96px, 9vw, 140px); aspect-ratio: 1; max-width: 100%; flex: none; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+.qr svg { display: block; width: 100%; height: 100%; }
+.qr-row .note .mono { color: var(--ink-2); font-size: 12px; overflow-wrap: anywhere; }
+.author-end { margin: 0; }
+
+/* ---------- мета: більший кегль для проєктора ---------- */
+html.deck-mode .task svg { width: clamp(54px, 5vw, 84px); height: clamp(54px, 5vw, 84px); }
+html.deck-mode .task h3 { font-size: clamp(20px, 2vw, 34px); }
+html.deck-mode .task p { font-size: clamp(16px, 1.3vw, 22px); }
+html.deck-mode .task .mono { font-size: clamp(12px, 1vw, 15px); }
+html.deck-mode .novelty { font-size: clamp(16px, 1.5vw, 24px); padding: clamp(14px, 1.4vw, 24px) clamp(16px, 1.6vw, 28px); }
+
+/* ---------- стрічка на телефоні: кнопки в куті не накладаються на текст ---------- */
+html:not(.deck-mode) .corner { position: absolute; }
+html:not(.deck-mode) .s-title { padding-top: 64px; }
+html:not(.deck-mode) .hint-keys { display: none; }
