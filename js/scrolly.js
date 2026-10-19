@@ -1,14 +1,14 @@
 /**
- * Скрол-сторітелінг «Динаміка та глибина участі, 2015–2026».
+ * Скрол-сторітелінг «Динаміка та глибина участі, 2015–2025».
  *
  * Праворуч — закріплений (sticky) блок із чотирма графіками:
- *   sc-strip     — 131 спостереження частки у видатках;
+ *   sc-strip     — спостереження частки у видатках (місто–рік);
  *   sc-amount    — кошти за рік (лінія);
  *   sc-bars      — заявки vs переможці (стовпчики);
  *   sc-coverage  — охоплення міст (area).
  *
  * Прогортання ліворуч керує «активним роком»: на початку блока показано 2015,
- * далі дані поступово прогружаються рік за роком, у кінці — 2026.
+ * далі дані поступово прогружаються рік за роком, у кінці — 2025.
  * Клік по точці/стовпчику закріплює дані (рік або спостереження), решта сіріє.
  */
 import { fmtInt, fmtUAH } from './format.js';
@@ -20,9 +20,9 @@ const IW = W - M.l - M.r, IH = H - M.t - M.b;
 const MOBILE = () => window.matchMedia('(max-width: 900px)').matches;
 
 export function initScrolly(data, analytics) {
-  const years = data.years;                       // 2015..2026
+  const years = data.years;                       // 2015..2025
   const series = years.map((y) => ({ year: y, ...data.totals[String(y)] }));
-  const obs = analytics.observations;             // 131 спостереження частки
+  const obs = analytics.observations;             // спостереження частки місто–рік
   const byYear = analytics.byYear;
 
   // Спільний стан
@@ -319,11 +319,11 @@ function coverageChart(series, onPin) {
   const hits = g.append('g').selectAll('circle').data(series).join('circle')
     .attr('cx', (d) => x(d.year)).attr('cy', (d) => y(d.activeCities)).attr('r', 12)
     .style('fill', 'transparent').style('cursor', 'pointer').attr('tabindex', 0).attr('role', 'button')
-    .attr('aria-label', (d) => `${d.year}: активних міст ${fmtInt(d.activeCities)} з 35`);
+    .attr('aria-label', (d) => `${d.year}: міст із переможцями ${fmtInt(d.activeCities)} з 35`);
 
   const ro = readout('#pin-coverage');
   const tip = (event, d) => { showTooltip(event, { title: `${d.year} рік`,
-    rows: [['Активних міст', fmtInt(d.activeCities), 'var(--s1)']],
+    rows: [['Міст із переможцями', fmtInt(d.activeCities), 'var(--s1)']],
     note: d.year >= 2022 ? 'Лише підтверджені цикли.' : 'З 35 міст рамки.' }); moveTooltip(event); };
   hits.on('pointerenter', tip).on('pointermove', moveTooltip).on('pointerleave', hideTooltip)
     .on('click', (e, d) => onPin(d.year))
@@ -343,7 +343,7 @@ function coverageChart(series, onPin) {
       [areaPath, solidPath, dashPath].forEach((p) => p.style('opacity', pinnedYear == null ? 1 : 0.4));
       if (pinnedYear != null && pinnedYear <= activeYear) {
         const d = series.find((s) => s.year === pinnedYear);
-        ro.show(`${d.year}: активних міст ${fmtInt(d.activeCities)} з 35`);
+        ro.show(`${d.year}: міст із переможцями ${fmtInt(d.activeCities)} з 35`);
       } else ro.hide();
     },
   };
@@ -352,7 +352,7 @@ function coverageChart(series, onPin) {
 /* --------------------------------------------- 4. частка (точкова діаграма) */
 function stripChart(obs, byYear, onPinObs, onPinYear) {
   const pct = (v, d = 2) => (100 * v).toLocaleString('uk-UA', { maximumFractionDigits: d }) + ' %';
-  const g = baseSVG('#sc-strip', 'Частка бюджету участі у видатках міста, 131 спостереження');
+  const g = baseSVG('#sc-strip', `Частка бюджету участі у видатках міста, ${obs.length} спостережень`);
   const years = [...new Set(obs.map((d) => d.year))].sort();
   const x = d3.scalePoint().domain(years).range([0, IW]).padding(0.5);
   const yMax = 0.0105;

@@ -156,9 +156,13 @@ export function groups(el, data) {
     const s = d3.select(svg).attr("viewBox", `0 0 ${w} ${h}`);
     s.selectAll("*").remove();
     const G = data.groups.filter((g) => g.kind === kind);
-    const cols = w > 720 ? 4 : 2, rowsN = Math.ceil(GM.length / cols);
+    const cols = w > 900 ? 4 : 2, rowsN = Math.ceil(GM.length / cols);
     const pw = w / cols, ph = h / rowsN;
-    const lblW = Math.min(132, pw * 0.42);
+    // Ширина підписів груп — за найдовшим підписом, щоб «Центр і Північ» не обрізався
+    const probe = s.append("text").attr("class", "gp-l");
+    const maxLbl = d3.max(G, (g) => probe.text(g.label).node().getComputedTextLength()) || 90;
+    probe.remove();
+    const lblW = Math.min(maxLbl + 16, pw * 0.5);
     GM.forEach((M, i) => {
       const gx = (i % cols) * pw, gy = Math.floor(i / cols) * ph;
       const p = s.append("g").attr("transform", `translate(${gx},${gy})`);
@@ -175,7 +179,7 @@ export function groups(el, data) {
       p.append("line").attr("x1", x0).attr("x2", x0).attr("y1", y0 - 8).attr("y2", y0 + used + 8).style("stroke", "var(--line)");
       const b = p.append("g").selectAll("rect").data(G).join("rect").attr("x", x0).attr("y", (g) => y(g.id)).attr("height", y.bandwidth()).attr("rx", 3)
         .style("fill", color).attr("width", 0);
-      animate(b, (t) => t.attr("width", (g) => x(g[M.k]) - x0));
+      animate(b, (t) => t.attr("width", (g) => Math.max(0, x(g[M.k]) - x0)));
       tipOn(b, (g) => `<b>${esc(g.label)}</b>${row("міст (з парами / у рамці)", g.cities)}${row("пар", g.pairs)}${row(M.t, M.f(g[M.k]))}`);
       p.append("g").selectAll("text.v").data(G).join("text").attr("class", "vlbl")
         .attr("x", (g) => x(g[M.k]) + 6).attr("y", (g) => y(g.id) + y.bandwidth() / 2 + 4)
@@ -321,7 +325,7 @@ export function votes(el, data) {
     g.append("text").attr("class", "hm-lbl").attr("x", mg.l - 8).attr("y", y.bandwidth() / 2 + 4).attr("text-anchor", "end")
       .style("font-size", Math.min(12, y.step() * 0.78) + "px").style("font-weight", (c) => (c.name === "Київ" ? 700 : null)).text((c) => c.name);
     const b = g.append("rect").attr("x", mg.l).attr("height", y.bandwidth()).attr("rx", 2).style("fill", (c) => `var(--rg-${c.region})`).attr("width", 0);
-    animate(b, (t) => t.attr("width", (c) => x(c.votes[year]) - mg.l));
+    animate(b, (t) => t.attr("width", (c) => Math.max(0, x(c.votes[year]) - mg.l)));
     g.append("text").attr("class", "vlbl").attr("x", (c) => x(c.votes[year]) + 5).attr("y", y.bandwidth() / 2 + 4)
       .style("font-size", Math.min(11.5, y.step() * 0.75) + "px").text((c) => fmt1(c.votes[year]));
     tipOn(g, (c) => cityTip(c, Object.entries(c.votes).map(([yy, v]) => row(yy, fmt1(v))).join("")));

@@ -25,7 +25,7 @@ function comparisonChart({ summary, international, barcelona }) {
     {
       name: 'Великі міста України',
       value: summary.mean,
-      tag: 'емпіричний факт, 2018–2026',
+      tag: 'емпіричний факт, 2018–2025',
       accent: true,
       detail: {
         rows: [['Середня частка', pct(summary.mean)], ['Медіана', pct(summary.median)],

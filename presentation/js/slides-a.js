@@ -162,8 +162,10 @@ export function logics(el) {
     const s = d3.select(svg).attr("viewBox", `0 0 ${w} ${h}`);
     s.selectAll("*").remove();
     show(sel);
-    const cardH = card.offsetHeight + 16;
-    const side = Math.min(w * 0.62, (h - cardH - 110) / 0.866);
+    // На вузькому екрані картка стоїть під графіком і не забирає його висоту
+    const cardH = getComputedStyle(card).position === "absolute" ? card.offsetHeight + 16 : 0;
+    const narrow = w < 560;
+    const side = Math.min(w * (narrow ? 0.8 : 0.62), (h - cardH - (narrow ? 130 : 110)) / 0.866);
     const th = side * 0.866, cx = w / 2, top = 56 + (h - cardH - 110 - th) / 2;
     const V = [[cx, top], [cx - side / 2, top + th], [cx + side / 2, top + th]];
     const bary = (a, b, c) => [a * V[0][0] + b * V[1][0] + c * V[2][0], a * V[0][1] + b * V[1][1] + c * V[2][1]];
@@ -177,11 +179,16 @@ export function logics(el) {
     const vg = s.append("g").selectAll("g").data(LOGICS).join("g").attr("class", "lg-v").attr("tabindex", 0).attr("role", "button")
       .attr("aria-label", (d) => `${d.t} логіка`).attr("transform", (d, i) => `translate(${V[i]})`);
     vg.append("circle").attr("r", 11);
-    vg.append("text").attr("class", "lg-t").attr("text-anchor", (d, i) => (i === 0 ? "middle" : i === 1 ? "end" : "start"))
-      .attr("x", (d, i) => (i === 0 ? 0 : i === 1 ? -18 : 18)).attr("y", (d, i) => (i === 0 ? -22 : 6)).text((d) => d.t);
-    vg.append("text").attr("class", "lg-s").attr("text-anchor", (d, i) => (i === 0 ? "middle" : i === 1 ? "end" : "start"))
-      .attr("x", (d, i) => (i === 0 ? 0 : i === 1 ? -18 : 18)).attr("y", (d, i) => (i === 0 ? -40 : 24))
-      .text((d, i) => ["правила пишуть учасники", "довіра та прозорість", "процедура й ефективність"][i]);
+    // Підписи нижніх вершин: збоку на широкому екрані, під вершиною — на вузькому
+    const anchor = (i) => (i === 0 ? "middle" : narrow ? (i === 1 ? "start" : "end") : i === 1 ? "end" : "start");
+    const lx = (i) => (i === 0 ? 0 : narrow ? (i === 1 ? -12 : 12) : i === 1 ? -18 : 18);
+    vg.append("text").attr("class", "lg-t").attr("text-anchor", (d, i) => anchor(i))
+      .attr("x", (d, i) => lx(i)).attr("y", (d, i) => (i === 0 ? -22 : narrow ? 30 : 6)).text((d) => d.t)
+      .style("font-size", narrow ? "13px" : null);
+    vg.append("text").attr("class", "lg-s").attr("text-anchor", (d, i) => anchor(i))
+      .attr("x", (d, i) => lx(i)).attr("y", (d, i) => (i === 0 ? -40 : narrow ? 47 : 24))
+      .text((d, i) => ["правила пишуть учасники", "довіра та прозорість", "процедура й ефективність"][i])
+      .style("display", (d, i) => (narrow && i > 0 ? "none" : null));
     vg.on("click keydown", (e, d) => { if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); show(LOGICS.indexOf(d)); });
     const p = bary(0.13, 0.62, 0.25);
     const ua = s.append("g").attr("class", "lg-ua").attr("tabindex", 0).attr("role", "button").attr("aria-label", UA.t).attr("transform", `translate(${p})`);

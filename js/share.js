@@ -21,11 +21,11 @@ export function initShare(analytics) {
 function renderTiles({ summary, periods }) {
   const el = document.getElementById('share-tiles');
   const tiles = [
-    ['Середня частка', pct(summary.mean), 'середнє 131 річної частки місто–рік'],
+    ['Середня частка', pct(summary.mean), `середнє ${summary.n} річних часток місто–рік`],
     ['Медіана', pct(summary.median), 'стійкий центр розподілу'],
     ['Зважена частка', pct(summary.weighted), 'Σ БУ ÷ Σ бюджетів міст'],
     ['Спостережень', fmtInt(summary.n), summary.frame],
-    ['2018–2021 vs 2022–2026', `${pct(periods[0].mean)} → ${pct(periods[1].mean)}`,
+    [`${periods[0].label} vs ${periods[1].label}`, `${pct(periods[0].mean)} → ${pct(periods[1].mean)}`,
       `${periods[0].n} проти ${periods[1].n} спостережень`],
   ];
   el.replaceChildren();

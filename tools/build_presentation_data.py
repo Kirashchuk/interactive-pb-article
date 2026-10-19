@@ -1,8 +1,9 @@
-"""Дані для інтерактивної презентації (presentation/).
+"""Дані для інтерактивної презентації (presentation/) і лонгріда (data/).
 
 Читає xlsx «Бюджети_участі_2015_2025_статистичні_дані» (аркуші «Матриця 2015-2025»
 і «Аналітика_частки») та JSON атласу (класи прозорості, голоси EGAP, картооснова),
-пише presentation/data/deck.json і presentation/data/geo.json.
+пише presentation/data/deck.json, presentation/data/geo.json, а також
+data/pb_data.json і data/analytics.json для лонгріда (той самий формат, що й раніше).
 
     python tools/build_presentation_data.py <xlsx> <atlas.json>
 
@@ -18,6 +19,7 @@ import openpyxl
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "presentation" / "data"
+ART = ROOT / "data"
 YEARS = list(range(2015, 2026))
 
 # Макрорегіональні групи статті (табл. 2)
@@ -163,9 +165,11 @@ def main(xlsx_path, atlas_path):
     assert set(type_of) == set(matrix), set(matrix) ^ set(type_of)
 
     cities = []
+    clean = {}  # очищені роки міста (після вилучень) — для даних лонгріда
     for name, m in matrix.items():
         a = acity[name]
         ys = m["years"]
+        clean[name] = ys
         # Заповненість бази «місто–рік» (табл. 1): заявки / переможці / сума, як у матриці
         mask = "".join("".join("1" if ys[y].get(k) else "0" for k in "aws") for y in YEARS)
         for y in YEARS:
@@ -263,6 +267,111 @@ def main(xlsx_path, atlas_path):
     (OUT / "deck.json").write_text(json.dumps(deck, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     write_geo(atlas)
     print("Записано", OUT / "deck.json", "і geo.json")
+    write_article_data(matrix, clean, cities)
+
+
+def norm_name(n):
+    return n.replace("'", "’")
+
+
+def write_article_data(matrix, clean, cities):
+    """data/pb_data.json і data/analytics.json лонгріда — з тієї самої бази, що й стаття.
+
+    Зі старих файлів беруться лише незмінні атрибути: код області, координати, стани
+    «призупинено» / «не проводився», основа суми (якщо сума збігається) та міжнародні кейси.
+    """
+    old = json.loads((ART / "pb_data.json").read_text(encoding="utf-8"))
+    old_an = json.loads((ART / "analytics.json").read_text(encoding="utf-8"))
+    oc = {norm_name(c["name"]): c for c in old["cities"]}
+    occ = {c["name"]: c["occupied"] for c in cities}
+    out_cities, obs = [], []
+    for name, m in matrix.items():
+        o, ys = oc[norm_name(name)], clean[name]
+        years = {}
+        for y in YEARS:
+            v, ov = ys[y], o["years"].get(str(y), {})
+            a, w, s, b = v.get("a"), v.get("w"), v.get("s"), v.get("b")
+            if y < m["first"]:
+                st = "pre"
+            elif a or w or s:
+                st = "data"
+            elif ov.get("status") in ("susp", "notheld"):
+                st = ov["status"]
+            else:
+                st = "nodata"
+            same = s is not None and ov.get("s") is not None and abs(ov["s"] - s) < 1
+            basis, prec = (ov.get("basis"), ov.get("precision")) if same else (None, None)
+            share = s / b if (s and b and y >= 2018) else None
+            years[str(y)] = {"a": a and int(a), "w": w and int(w), "s": s, "budget": b, "status": st,
+                             "basis": basis, "precision": prec,
+                             "perWinner": round(s / w) if s and w else None, "share": share}
+            if share is not None:
+                obs.append({"city": name, "year": y, "s": s, "budget": b, "share": share, "basis": basis, "precision": prec})
+        out_cities.append({"name": name, "region": o["region"], "iso": o["iso"], "lon": o["lon"], "lat": o["lat"],
+                           "population": m["pop"], "tot2022": occ[name], "firstYear": m["first"], "years": years})
+    out_cities.sort(key=lambda c: c["name"])
+
+    totals = {}
+    for y in YEARS:
+        rows = [c["years"][str(y)] for c in out_cities]
+        totals[str(y)] = {
+            "activeCities": sum(1 for r in rows if r["w"]),  # міста з визначеними переможцями (рис. 1а)
+            "applications": int(sum(r["a"] or 0 for r in rows)),
+            "winners": int(sum(r["w"] or 0 for r in rows)),
+            "amount": round(sum(r["s"] or 0 for r in rows)),
+            "citiesWithAmount": sum(1 for r in rows if r["s"]),
+            "confirmedOnly": y >= 2022,
+        }
+    city_tot = sorted(({"name": c["name"], "amount": round(sum(r["s"] or 0 for r in c["years"].values()))} for c in out_cities),
+                      key=lambda d: -d["amount"])
+    pb = {
+        "meta": {
+            "title": "Бюджети участі великих міст України, 2015–2025",
+            "generated": "2026-10-17",
+            "frame": old["meta"]["frame"],
+            "caveats": [
+                "Порожня клітинка не дорівнює нулю: стани «немає даних», «до запуску», «призупинено», «не проводився» розрізняються явно.",
+                "Суми мають різні основи (річний ліміт, сума бюджетів переможців, офіційний розподіл) і не усереднюються між містами.",
+                "2022 р.: нових відборів не зафіксовано (повтори циклів 2021 р. вилучено); 2023–2025 — документований мінімум.",
+            ],
+        },
+        "years": YEARS, "totals": totals, "cities": out_cities, "cityTotals": city_tot,
+    }
+
+    obs.sort(key=lambda d: (d["city"], d["year"]))
+
+    def stats(rows):
+        sh = [r["share"] for r in rows]
+        return {"n": len(rows), "mean": statistics.mean(sh), "median": statistics.median(sh),
+                "weighted": sum(r["s"] for r in rows) / sum(r["budget"] for r in rows)}
+
+    by_year = [{"year": y, **stats([r for r in obs if r["year"] == y])} for y in YEARS if any(r["year"] == y for r in obs)]
+    profiles = []
+    for name in sorted({r["city"] for r in obs}):
+        rows = [r for r in obs if r["city"] == name]
+        sh = [r["share"] for r in rows]
+        profiles.append({"city": name, "n": len(rows), "firstYear": rows[0]["year"], "lastYear": rows[-1]["year"],
+                         "mean": statistics.mean(sh), "median": statistics.median(sh), "min": min(sh), "max": max(sh)})
+    profiles.sort(key=lambda p: -p["mean"])
+    pre = [r for r in obs if r["year"] <= 2021]
+    post = [r for r in obs if r["year"] >= 2022]
+    an = {
+        "summary": {**stats(obs), "frame": "35 міст, 2018–2025"},
+        "byYear": by_year,
+        "observations": obs,
+        "profiles": profiles,
+        "periods": [{"label": "2018–2021", "n": len(pre), "mean": statistics.mean(r["share"] for r in pre)},
+                    {"label": "2023–2025", "n": len(post), "mean": statistics.mean(r["share"] for r in post)}],
+        "thresholds": old_an.get("thresholds", []),
+        "international": old_an["international"],
+        "barcelona": old_an["barcelona"],
+    }
+    s18 = stats(pre)
+    print(f"Лонгрід: пар 2018–2021 = {s18['n']}, медіана {s18['median'] * 100:.3f}% (стаття 0,299), "
+          f"зважена {s18['weighted'] * 100:.3f}% (стаття 0,306); усього спостережень {len(obs)}")
+    (ART / "pb_data.json").write_text(json.dumps(pb, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (ART / "analytics.json").write_text(json.dumps(an, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print("Записано data/pb_data.json і data/analytics.json")
 
 
 def rnd_line(line, nd=2):

@@ -6,6 +6,13 @@
 import { fmtInt, fmtUAH, fmtMetric, totalReadout, METRIC_LABELS } from './format.js';
 import { showTooltip, moveTooltip, hideTooltip } from './tooltip.js';
 import { YEAR_TEXTS } from './year-texts.js';
+
+/** «2 міста», «5 міст», «21 місто» */
+const plural = (n, one, few, many) => {
+  const a = n % 10, b = n % 100;
+  if (a === 1 && b !== 11) return one;
+  return a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many;
+};
 import { frameLabels, scaleBar } from './sheet.js';
 
 const SEQ = ['var(--seq1)', 'var(--seq2)', 'var(--seq3)', 'var(--seq4)', 'var(--seq5)', 'var(--seq6)'];
@@ -85,9 +92,9 @@ function initYearStory(data, onChange) {
     title.textContent = yt.title;
     facts.replaceChildren();
     const parts = [
-      [fmtInt(t.activeCities), ' активних міст'],
-      [fmtInt(t.applications), ' заявок'],
-      [fmtInt(t.winners), ' переможців'],
+      [fmtInt(t.activeCities), ` ${plural(t.activeCities, 'місто', 'міста', 'міст')}${t.activeCities % 10 === 1 || (t.activeCities % 10 >= 2 && t.activeCities % 10 <= 4) ? ' з' : ' із'} переможцями`],
+      [fmtInt(t.applications), ` ${plural(t.applications, 'заявка', 'заявки', 'заявок')}`],
+      [fmtInt(t.winners), ` ${plural(t.winners, 'переможець', 'переможці', 'переможців')}`],
       [fmtUAH(t.amount), ' розподілено'],
     ];
     parts.forEach(([b, rest], i) => {

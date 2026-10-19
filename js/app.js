@@ -6,6 +6,7 @@ import { initScrolly } from './scrolly.js';
 import { initShare } from './share.js';
 import { initIntl } from './intl.js';
 import { initContours } from './sheet.js';
+import { initAtlas } from './atlas.js';
 
 async function main() {
   initTheme();
@@ -36,6 +37,7 @@ async function main() {
   initScrolly(data, analytics);
   initShare(analytics);
   initIntl(analytics);
+  initAtlas(data);
 }
 
 function showLoadError(err) {
