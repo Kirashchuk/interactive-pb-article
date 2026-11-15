@@ -316,7 +316,7 @@ html:not(.deck-mode) .hint-keys { display: none; }
 .pdf-btn:hover { background: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
 .pdf-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* Автори спільної статті в порядку співавторства. */
+/* Автори статті. */
 .authors { display: grid; gap: 6px; }
 .author-end + .author-end { margin-top: 4px; }
 #holosuvannia .big b { font-size: clamp(24px, 2.7vw, 48px); }
