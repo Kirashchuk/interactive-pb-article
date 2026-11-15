@@ -69,9 +69,9 @@ const STEPS = [
   { k: "idea", t: "Ідея", d: "Мешканець формулює проєкт для міста чи району.", f: "Підписний поріг — зазвичай 10–20 підписів" },
   { k: "submit", t: "Подання", d: "Заявка на платформі e-DEM, «Громадський проєкт» або міській.", f: "26 981 заявка у 2015–2025 рр." },
   { k: "review", t: "Експертиза", d: "Перевірка реалістичності проєкту й кошторису.", f: "Граничний кошторис — від 75 тис. до 3 млн грн" },
-  { k: "vote", t: "Голосування", d: "Мешканці обирають переможців — онлайн або змішано.", f: "1,93 млн голосів у 2019 р." },
+  { k: "vote", t: "Голосування", d: "Мешканці обирають переможців — онлайн або змішано.", f: "У 2019 р. — від 5,2 до 366,4 голосів на тис. мешканців" },
   { k: "fund", t: "Фінансування", d: "Переможців включають до міського бюджету.", f: "6 207 переможців · 3,07 млрд грн" },
-  { k: "build", t: "Реалізація", d: "Місто впроваджує проєкт; статус має бути публічним.", f: "77% реалізовано — 11 міст, «Громадський проєкт»" },
+  { k: "build", t: "Реалізація", d: "Місто впроваджує проєкт; статус має бути публічним.", f: "Реальний вплив участі потребує зворотного зв’язку" },
 ];
 
 export function cycle(el) {
@@ -139,17 +139,17 @@ export function cycle(el) {
 
 // ---------- 3. Трикутник логік (Cabannes, Lipietz 2018) ----------
 const LOGICS = [
-  { t: "Політична", d: "Учасники самі встановлюють правила; бюджет участі перерозподіляє владу й ресурси на користь громади." },
-  { t: "Доброврядна", d: "Участь підвищує прозорість і довіру до влади; правила й рамки задає місцева влада." },
-  { t: "Технократична", d: "Участь як управлінський інструмент: процедура, експертиза, ефективність витрат." },
+  { t: "Влада", d: "Забезпечує нормативну рамку, процедурну легітимність, бюджетні механізми та формальну відповідальність за рішення." },
+  { t: "Бізнес", d: "Володіє інвестиційними ресурсами, технологічними рішеннями та управлінськими компетенціями." },
+  { t: "Громада", d: "Формує локальне знання про простір, повсякденні потреби та межі суспільної прийнятності рішень." },
 ];
 export function logics(el) {
   const svg = el.querySelector("#logics-svg");
   const vis = svg.parentNode;
   let card = vis.querySelector(".logic-card");
   if (!card) { card = document.createElement("div"); card.className = "logic-card"; vis.appendChild(card); }
-  let sel = 3;
-  const UA = { t: "Великі міста України", d: "Правила задають положення міських рад, фонд невеликий, вибір — голосуванням: модель ближча до доброврядної логіки." };
+  let sel = 0;
+  const UA = { t: "Спільне врядування", d: "Координація, переговори та вироблення спільних правил є передумовами більш стійких і легітимних міських політик." };
   function show(i) {
     sel = i;
     const L = i === 3 ? UA : LOGICS[i];
@@ -177,7 +177,7 @@ export function logics(el) {
       grid.append("line").attr("x1", bary(1 - t, 0, t)[0]).attr("y1", bary(1 - t, 0, t)[1]).attr("x2", bary(0, 1 - t, t)[0]).attr("y2", bary(0, 1 - t, t)[1]);
     });
     const vg = s.append("g").selectAll("g").data(LOGICS).join("g").attr("class", "lg-v").attr("tabindex", 0).attr("role", "button")
-      .attr("aria-label", (d) => `${d.t} логіка`).attr("transform", (d, i) => `translate(${V[i]})`);
+      .attr("aria-label", (d) => `${d.t}: роль у партисипативному управлінні`).attr("transform", (d, i) => `translate(${V[i]})`);
     vg.append("circle").attr("r", 11);
     // Підписи нижніх вершин: збоку на широкому екрані, під вершиною — на вузькому
     const anchor = (i) => (i === 0 ? "middle" : narrow ? (i === 1 ? "start" : "end") : i === 1 ? "end" : "start");
@@ -187,14 +187,14 @@ export function logics(el) {
       .style("font-size", narrow ? "13px" : null);
     vg.append("text").attr("class", "lg-s").attr("text-anchor", (d, i) => anchor(i))
       .attr("x", (d, i) => lx(i)).attr("y", (d, i) => (i === 0 ? -40 : narrow ? 47 : 24))
-      .text((d, i) => ["правила пишуть учасники", "довіра та прозорість", "процедура й ефективність"][i])
+      .text((d, i) => ["правила й відповідальність", "ресурси й технології", "локальне знання"][i])
       .style("display", (d, i) => (narrow && i > 0 ? "none" : null));
     vg.on("click keydown", (e, d) => { if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); show(LOGICS.indexOf(d)); });
-    const p = bary(0.13, 0.62, 0.25);
+    const p = bary(1 / 3, 1 / 3, 1 / 3);
     const ua = s.append("g").attr("class", "lg-ua").attr("tabindex", 0).attr("role", "button").attr("aria-label", UA.t).attr("transform", `translate(${p})`);
     ua.append("circle").attr("class", "halo").attr("r", 22);
     ua.append("circle").attr("r", 9);
-    ua.append("text").attr("x", 16).attr("y", -12).text("Україна");
+    ua.append("text").attr("x", 16).attr("y", -12).text("Взаємодія");
     ua.on("click keydown", (e) => { if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); show(3); });
     show(sel);
   }

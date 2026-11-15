@@ -1034,3 +1034,7 @@ footer ul { padding-left: 1.2rem; }
   .explorer, .chart-card { box-shadow: none; }
   .map-analysis-card { box-shadow: none; break-inside: avoid; }
 }
+
+/* Source-faithful article and supplementary evidence. */
+.references { overflow-wrap: anywhere; }
+.supplement-note { border-left: 3px solid var(--accent, #1c5dcc); padding-left: 1rem; }

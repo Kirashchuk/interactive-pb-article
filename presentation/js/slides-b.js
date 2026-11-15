@@ -62,7 +62,7 @@ export function share(el, data) {
     lg.append("circle").attr("cx", 4).attr("cy", -2).attr("r", 5).style("fill", "var(--ink-2)");
     lg.append("text").attr("class", "annot").attr("x", 14).attr("y", 2).text("зважена частка 2018–2021");
     lg.append("circle").attr("cx", 4).attr("cy", 16).attr("r", 2.2).style("fill", "var(--surface)").style("stroke", "var(--ink-2)");
-    lg.append("text").attr("class", "annot").attr("x", 14).attr("y", 20).text("окремі роки — стабільна ієрархія");
+    lg.append("text").attr("class", "annot").attr("x", 14).attr("y", 20).text("значення за окремі роки");
   }
   render();
   return {
@@ -130,21 +130,20 @@ export function choropleth(el, data) {
   return { render };
 }
 
-// ---------- 13. Групи міст (табл. 2) ----------
+// ---------- 13. Групи міст (табл. 1 фінального рукопису) ----------
 const GM = [
-  { k: "median", t: "Медіана частки, %", f: (v) => dec(v) },
-  { k: "weighted", t: "Зважена частка, %", f: (v) => dec(v) },
   { k: "uah", t: "Грн на мешканця", f: (v) => fmt1(v) },
   { k: "apps", t: "Заявок на 1 тис.", f: (v) => dec(v) },
+  { k: "spend", t: "Видатки, тис. грн/мешк.", f: (v) => fmt1(v) },
 ];
 const GROUP_TEXT = {
   region: {
-    h: "Захід — найвища частка, Південь і Схід — найменший ресурс на мешканця",
-    p: "Міста західної частини мають найвищі медіанні частки (0,36%), а південної та східної — найменший ресурс на мешканця: 20,5 грн проти ≈47 грн в інших групах.",
+    h: "Ресурс на мешканця: близько 47 грн на Заході, у Центрі й на Півночі",
+    p: "Ресурс на мешканця: 47,3 грн на Заході, 47,4 грн у Центрі й на Півночі та 20,5 грн на Півдні й Сході; видатки на мешканця — 13,2, 12,7 та 11,0 тис. грн відповідно.",
   },
   size: {
-    h: "Найменші міста: найнижча частка, але найвища активність подання",
-    p: "У містах із населенням 100–199 тис. — частка 0,20% і 19,2 грн на мешканця, але найвища активність подання: 0,49 заявки на 1 тис.",
+    h: "Міста зі 100–199 тис. мешканців: найменший ресурс, найвища активність",
+    p: "У містах із населенням 100–199 тис. — 19,2 грн на мешканця і 0,49 заявки на тис.; у містах-мільйонниках — 57,6 грн і 0,19 заявки відповідно.",
   },
 };
 export function groups(el, data) {
@@ -156,14 +155,15 @@ export function groups(el, data) {
     const s = d3.select(svg).attr("viewBox", `0 0 ${w} ${h}`);
     s.selectAll("*").remove();
     const G = data.groups.filter((g) => g.kind === kind);
-    const cols = w > 900 ? 4 : 2, rowsN = Math.ceil(GM.length / cols);
+    const metrics = GM.filter((M) => G.some((g) => g[M.k] != null));
+    const cols = w > 900 ? metrics.length : w >= 600 ? Math.min(2, metrics.length) : 1, rowsN = Math.ceil(metrics.length / cols);
     const pw = w / cols, ph = h / rowsN;
     // Ширина підписів груп — за найдовшим підписом, щоб «Центр і Північ» не обрізався
     const probe = s.append("text").attr("class", "gp-l");
     const maxLbl = d3.max(G, (g) => probe.text(g.label).node().getComputedTextLength()) || 90;
     probe.remove();
     const lblW = Math.min(maxLbl + 16, pw * 0.5);
-    GM.forEach((M, i) => {
+    metrics.forEach((M, i) => {
       const gx = (i % cols) * pw, gy = Math.floor(i / cols) * ph;
       const p = s.append("g").attr("transform", `translate(${gx},${gy})`);
       const showLbl = i % cols === 0;
@@ -349,7 +349,7 @@ export function typology(el, data) {
   let filter = null, shapes, labels;
   const icon = (k, c) => `<svg width="18" height="18" viewBox="-9 -9 18 18" aria-hidden="true"><path d="${shapePath(k, 6.2)}" fill="${c}"/></svg>`;
   const meanTr = (k) => d3.mean(cs.filter((c) => c.type === k), (c) => c.tr);
-  matrix.innerHTML = `<span></span><span class="mh">вагома вага<br><em>≥ 0,30%</em></span><span class="mh">невелика вага<br><em>&lt; 0,30%</em></span>` +
+  matrix.innerHTML = `<span></span><span class="mh">суттєва вага<br><em>≥ 0,30%</em></span><span class="mh">незначна вага<br><em>&lt; 0,30%</em></span>` +
     TQ.map((rw, i) => `<span class="mh row">${i ? "переривчаста" : "стала"}<br><em>${i ? "&lt; 6 років" : "≥ 6 років"}</em></span>` + rw.map((k) => {
       const list = cs.filter((c) => c.type === k);
       return `<button type="button" class="mq" data-t="${k}" aria-pressed="false">
@@ -398,7 +398,7 @@ export function themes(el, data) {
   const card = (k, t, s) => `<div class="picto"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="${PICTO[k]}"/></svg><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div>`;
   el.querySelector("#pictos").innerHTML =
     `<div class="pg"><span class="pg-t mono">2016–2019 · найчастіше</span><div class="pg-row">${card("edu", "Освіта", "школи, садочки")}${card("park", "Благоустрій", "сквери, двори")}${card("sport", "Спорт", "майданчики")}</div></div>` +
-    `<div class="pg war"><span class="pg-t mono">після 24.02.2022</span><div class="pg-row">${card("shield", "Потреби оборони", "Івано-Франківськ")}${card("rehab", "Реабілітація захисників", "")}${card("idp", "Інтеграція ВПО", "")}${card("shelter", "Укриття", "Хмельницький, Кам’янське")}</div></div>`;
+    `<div class="pg war"><span class="pg-t mono">після 24.02.2022</span><div class="pg-row">${card("shield", "Безпека", "")}${card("rehab", "Реабілітація захисників", "")}${card("idp", "Інтеграція ВПО", "")}${card("shelter", "Укриття", "")}</div></div>`;
   function render() {
     const { w } = box(svg), h = 196;
     const s = d3.select(svg).attr("viewBox", `0 0 ${w} ${h}`).style("height", h + "px");
@@ -420,32 +420,33 @@ export function themes(el, data) {
 
 // ---------- 20. Реєстр ----------
 const STATUS = [
-  { s: "подано", d: "15.03.2024" }, { s: "допущено до голосування", d: "20.05.2024" }, { s: "переможець", d: "30.06.2024" },
-  { s: "у реалізації", d: "03.02.2025" }, { s: "реалізовано", d: "26.01.2026" },
+  { s: "Збирання", d: "Збирання пропозицій мешканців про потреби та проблеми міста." },
+  { s: "Обговорення", d: "Обговорення пропозицій із залученням різних груп мешканців." },
+  { s: "Узгодження", d: "Координація акторів, переговори та вироблення спільних правил." },
+  { s: "Ухвалення", d: "Вбудовування участі в офіційні процеси прийняття рішень." },
+  { s: "Контроль", d: "Контроль рішень і зворотний зв’язок щодо використання пропозицій." },
 ];
 export function registry(el) {
   const rec = el.querySelector("#record"), flow = el.querySelector("#registry-flow");
   let st = 4, timer = null;
   function draw() {
     const S = STATUS[st];
-    rec.innerHTML = `<div class="rec-h"><span class="mono">Запис реєстру</span><em>приклад</em></div>
+    rec.innerHTML = `<div class="rec-h"><span class="mono">Цикл цифрової участі</span><em>ілюстративна схема</em></div>
       <dl>
-        <dt>ID циклу</dt><dd class="mono">UA-ГБ-2024-<i>код громади</i></dd>
-        <dt>ID проєкту</dt><dd class="mono">UA-ГБ-2024-…-0137</dd>
-        <dt>Назва</dt><dd>Облаштування укриття в школі</dd>
-        <dt>Статус</dt><dd><span class="st st-${st}">${esc(S.s)}</span></dd>
-        <dt>Дата статусу</dt><dd class="mono">${S.d}</dd>
-        <dt>Бюджет: план / факт</dt><dd class="mono">1 200 000 / ${st === 4 ? "1 164 300" : "—"} грн</dd>
-        <dt>Підтвердний документ</dt><dd>${st >= 2 ? (st === 4 ? "акт приймання робіт (PDF)" : "рішення про визначення переможців") : "заявка (PDF)"}</dd>
+        <dt>Етап</dt><dd><span class="st st-${st}">${esc(S.s)}</span></dd>
+        <dt>Зміст</dt><dd>${esc(S.d)}</dd>
+        <dt>Канали</dt><dd>Поєднання цифрових і офлайнових форм участі</dd>
+        <dt>Умова</dt><dd>Прозорі правила, доступність та інституційна відповідальність</dd>
+        <dt>Міський розвиток</dt><dd>Залучення локального знання про доступність, комфортність та просторові відміни</dd>
       </dl>
-      <div class="rec-tl" role="group" aria-label="Статуси запису">${STATUS.map((x, i) => `<button type="button" data-i="${i}" class="${i <= st ? "on" : ""}" aria-pressed="${i === st}"><i></i><span>${esc(x.s)}</span></button>`).join("")}</div>`;
+      <div class="rec-tl" role="group" aria-label="Етапи повного циклу рішень">${STATUS.map((x, i) => `<button type="button" data-i="${i}" class="${i <= st ? "on" : ""}" aria-pressed="${i === st}"><i></i><span>${esc(x.s)}</span></button>`).join("")}</div>`;
     rec.querySelectorAll(".rec-tl button").forEach((b) => b.addEventListener("click", () => { clearInterval(timer); st = +b.dataset.i; draw(); }));
   }
   function render() {
     const { w } = box(flow), h = 70;
     const s = d3.select(flow).attr("viewBox", `0 0 ${w} ${h}`).style("height", h + "px");
     s.selectAll("*").remove();
-    const N = ["Міська рада", "Реєстр", "data.gov.ua", "Мешканці, дослідники"];
+    const N = ["Збирання", "Обговорення", "Ухвалення", "Контроль"];
     const bw = (w - 3 * 28) / 4;
     s.append("defs").append("marker").attr("id", "rg-arrow").attr("viewBox", "0 0 10 10").attr("refX", 8).attr("refY", 5).attr("markerWidth", 7).attr("markerHeight", 7).attr("orient", "auto")
       .append("path").attr("d", "M0 0L10 5L0 10z").style("fill", "var(--muted)");

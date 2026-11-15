@@ -17,7 +17,7 @@ await Promise.all([
   access(resolve(root, "dist", "client", "assets", "maps", "prewar-resource-share.png")),
   access(resolve(root, "dist", "client", "assets", "maps", "resource-share-stability.png")),
   access(resolve(root, "dist", "client", "vendor", "d3.v7.min.js")),
-  access(resolve(root, "dist", "client", "Стаття_Бюджети_участі_2015-2026.pdf")),
+  access(resolve(root, "dist", "client", "Стаття_Бюджети_участі_2015-2025.pdf")),
   access(resolve(root, "dist", "client", "presentation", "index.html")),
   access(resolve(root, "dist", "client", "presentation", "data", "deck.json")),
   access(resolve(root, "dist", "client", "presentation", "data", "geo.json")),
