@@ -273,6 +273,19 @@ b, strong { font-weight: 600; }
   letter-spacing: 0.04em;
   color: var(--muted);
 }
+.hero-affiliation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 660px;
+  margin: 12px 0 14px;
+}
+.hero-university-logo {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
